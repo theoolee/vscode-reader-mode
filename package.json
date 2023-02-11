@@ -1,0 +1,108 @@
+{
+  "name": "reader-mode",
+  "version": "0.1.0",
+  "publisher": "theoolee",
+  "displayName": "Reader Mode",
+  "description": "Provide Visual Studio Code with the same reader mode as IntelliJ.",
+  "icon": "img/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theoolee/vscode-reader-mode"
+  },
+  "bugs": {
+    "url": "https://github.com/theoolee/vscode-reader-mode/issues"
+  },
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "read",
+    "mode",
+    "reader",
+    "readonly"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "out/src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "reader-mode.toggleReaderMode",
+        "title": "Reader Mode: Toggle Reader Mode"
+      }
+    ],
+    "configuration": {
+      "title": "Reader Mode",
+      "properties": {
+        "reader-mode.propagate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to propagate reader mode when jumping from a reader mode file to another file."
+        },
+        "reader-mode.auto.outOfWorkspace": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to automatically open files outside of the workspace in reader mode."
+        },
+        "reader-mode.auto.glob": {
+          "type": "array",
+          "default": [
+            "**/node_modules/**"
+          ],
+          "description": "A list of glob to match against the path of the file to determine if it should be opened in reader mode automatically."
+        },
+        "reader-mode.commentStyle.fontFamily": {
+          "type": "string",
+          "description": "The font family to use for comments in reader mode."
+        },
+        "reader-mode.commentStyle.fontStyle": {
+          "type": "string",
+          "default": "italic",
+          "description": "The font style to use for comments in reader mode."
+        },
+        "reader-mode.commentStyle.fontSize": {
+          "type": "string",
+          "default": "0.9em",
+          "description": "The font size to use for comments in reader mode."
+        },
+        "reader-mode.commentStyle.fontWeight": {
+          "type": "string",
+          "default": "300",
+          "description": "The font weight to use for comments in reader mode."
+        },
+        "reader-mode.commentStyle.opacity": {
+          "type": "string",
+          "default": "0.7",
+          "description": "The font opacity to use for comments in reader mode."
+        },
+        "reader-mode.commentStyle.backgroundColor": {
+          "type": "string",
+          "default": "rgba(255, 255, 255, 0.03)",
+          "description": "The background color to use for comments in reader mode."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "minimatch": "^6.2.0"
+  }
+}
