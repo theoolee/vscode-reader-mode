@@ -16,27 +16,64 @@ class FileSystemProvider implements vscode.FileSystemProvider {
     return vscode.workspace.fs.readFile(toFileUri(uri))
   }
 
-  watch() {
-    return { dispose: () => {} }
+  watch(uri: vscode.Uri) {
+    const watcher = vscode.workspace.createFileSystemWatcher(
+      toFileUri(uri).path
+    )
+
+    watcher.onDidChange(() => {
+      this.onDidChangeFileEmitter.fire([
+        {
+          type: vscode.FileChangeType.Changed,
+          uri,
+        },
+      ])
+    })
+
+    watcher.onDidCreate(() => {
+      this.onDidChangeFileEmitter.fire([
+        {
+          type: vscode.FileChangeType.Created,
+          uri,
+        },
+      ])
+    })
+
+    watcher.onDidDelete(() => {
+      this.onDidChangeFileEmitter.fire([
+        {
+          type: vscode.FileChangeType.Deleted,
+          uri,
+        },
+      ])
+    })
+
+    return watcher
   }
 
-  stat() {
-    return {
-      type: vscode.FileType.File,
-      ctime: 0,
-      mtime: 0,
-      size: 0,
-    }
+  stat(uri: vscode.Uri) {
+    return vscode.workspace.fs.stat(toFileUri(uri))
   }
 
-  readDirectory() {
-    return []
+  readDirectory(uri: vscode.Uri) {
+    return vscode.workspace.fs.readDirectory(toFileUri(uri))
   }
 
-  createDirectory() {}
-  writeFile() {}
-  delete() {}
-  rename(): void {}
+  createDirectory(uri: vscode.Uri) {
+    return vscode.workspace.fs.createDirectory(toFileUri(uri))
+  }
+
+  writeFile(uri: vscode.Uri, content: Uint8Array) {
+    return vscode.workspace.fs.writeFile(toFileUri(uri), content)
+  }
+
+  delete(uri: vscode.Uri, options: { readonly recursive: boolean }) {
+    return vscode.workspace.fs.delete(toFileUri(uri))
+  }
+
+  rename(oldUri: vscode.Uri, newUri: vscode.Uri) {
+    return vscode.workspace.fs.rename(toFileUri(oldUri), toFileUri(newUri))
+  }
 }
 
 export class FileSystemRegister extends BaseRegister {
