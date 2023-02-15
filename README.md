@@ -12,6 +12,16 @@ Provides an elegant and secure way to read library code.
 - Highlight comments in a soft color, this makes it easier to distinguish between comments and code.
 - Automatically open files in reader mode, out of workspace or by glob matching.
 
+## Usage
+
+Manually toggle reader mode:
+
+- Open the command palette and run `Reader Mode: Toggle Reader Mode`.
+
+Automatically open files in reader mode:
+
+- See [Settings](#settings).
+
 ## Settings
 
 Enable reader mode automatically for files out of the current workspace:

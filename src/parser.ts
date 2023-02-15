@@ -17,34 +17,135 @@ function escapeRegExp(text: string) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
-function getCommentDelimiter(languageId: string): CommentDelimiter | undefined {
+function getCommentDelimiter(languageId: string): CommentDelimiter {
+  const commentDelimiter: CommentDelimiter = {}
+
+  // For line.
   switch (languageId) {
+    case 'al':
     case 'c':
     case 'cpp':
+    case 'csharp':
+    case 'css':
+    case 'dart':
+    case 'fsharp':
+    case 'go':
+    case 'haxe':
+    case 'java':
     case 'javascript':
     case 'javascriptreact':
+    case 'jsonc':
+    case 'kotlin':
+    case 'less':
+    case 'pascal':
+    case 'objectpascal':
+    case 'php':
+    case 'rust':
+    case 'scala':
+    case 'swift':
     case 'typescript':
     case 'typescriptreact':
-    case 'dart':
-      return {
-        line: '//',
-        block: {
-          start: '/*',
-          end: '*/',
-        },
-      }
     case 'json':
     case 'jsonc':
-      return {
-        line: '//',
-      }
+      commentDelimiter.line = '//'
+      break
+    case 'coffeescript':
+    case 'dockerfile':
+    case 'elixir':
+    case 'graphql':
+    case 'julia':
+    case 'makefile':
+    case 'perl':
+    case 'perl6':
+    case 'powershell':
     case 'python':
-    case 'yaml':
+    case 'r':
+    case 'ruby':
     case 'shellscript':
-      return {
-        line: '#',
-      }
+    case 'yaml':
+      commentDelimiter.line = '#'
+      break
+    case 'ada':
+    case 'haskell':
+    case 'plsql':
+    case 'sql':
+    case 'lua':
+      commentDelimiter.line = '--'
+      break
+    case 'clojure':
+    case 'racket':
+    case 'lisp':
+      commentDelimiter.line = ';'
+      break
+    case 'erlang':
+    case 'latex':
+      commentDelimiter.line = '%'
+      break
+    case 'vb':
+      commentDelimiter.line = "'"
   }
+
+  // For block.
+  switch (languageId) {
+    case 'al':
+    case 'c':
+    case 'cpp':
+    case 'csharp':
+    case 'css':
+    case 'dart':
+    case 'fsharp':
+    case 'go':
+    case 'haxe':
+    case 'java':
+    case 'javascript':
+    case 'javascriptreact':
+    case 'jsonc':
+    case 'kotlin':
+    case 'less':
+    case 'pascal':
+    case 'objectpascal':
+    case 'php':
+    case 'rust':
+    case 'scala':
+    case 'swift':
+    case 'typescript':
+    case 'typescriptreact':
+    case 'sql':
+    case 'css':
+      commentDelimiter.block = {
+        start: '/*',
+        end: '*/',
+      }
+      break
+    case 'python':
+      commentDelimiter.block = {
+        start: '"""',
+        end: '"""',
+      }
+      break
+    case 'ruby':
+      commentDelimiter.block = {
+        start: '=begin',
+        end: '=end',
+      }
+      break
+    case 'lua':
+      commentDelimiter.block = {
+        start: '--[[',
+        end: ']]',
+      }
+      break
+    case 'html':
+    case 'xml':
+    case 'markdown':
+      commentDelimiter.block = {
+        start: '<!--',
+        end: '-->',
+      }
+      break
+  }
+
+  return commentDelimiter
 }
 
 export function parseComment(document: vscode.TextDocument): CommentRecords {
