@@ -42,14 +42,3 @@ export function toReaderModeUri(uri: vscode.Uri) {
     scheme: config['schemeName'],
   })
 }
-
-export function isReaderModeUriFromFileUri(
-  readerModeUri: vscode.Uri,
-  fileUri: vscode.Uri
-) {
-  return (
-    readerModeUri.scheme === config['schemeName'] &&
-    fileUri.scheme === 'file' &&
-    readerModeUri.path === fileUri.path
-  )
-}
