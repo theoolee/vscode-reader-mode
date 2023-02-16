@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import vscode from 'vscode'
-import { showReaderModeDocument } from '../action'
 import { config } from '../config'
 import { parseComment } from '../parser'
-import { shouldUriAutoReaderMode } from '../util/uri'
 import { BaseRegister } from './base'
 
-export class EventHandlerRegister extends BaseRegister {
+export class CommentHighlightRegister extends BaseRegister {
   private computeCommentDecorationType(isWholeLine = false) {
     const fontStyle = {
       'font-family': config['commentStyle.fontFamily'],
@@ -28,23 +26,7 @@ export class EventHandlerRegister extends BaseRegister {
     })
   }
 
-  private registerAutoReaderModeHandler() {
-    this.context.subscriptions.push(
-      vscode.window.onDidChangeActiveTextEditor(async (editor) => {
-        if (!editor) {
-          return
-        }
-
-        const document = editor.document
-
-        if (shouldUriAutoReaderMode(document.uri)) {
-          showReaderModeDocument(document)
-        }
-      })
-    )
-  }
-
-  private registerHighlightCommentHandler() {
+  protected doRegister() {
     this.context.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor((editor) => {
         const document = editor?.document
@@ -63,10 +45,5 @@ export class EventHandlerRegister extends BaseRegister {
         }
       })
     )
-  }
-
-  protected doRegister() {
-    this.registerAutoReaderModeHandler()
-    this.registerHighlightCommentHandler()
   }
 }

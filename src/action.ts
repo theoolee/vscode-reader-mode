@@ -1,5 +1,4 @@
 import vscode from 'vscode'
-import { config } from './config'
 import {
   closeActiveEditor,
   getActiveEditorSelection,
@@ -31,23 +30,9 @@ async function switchTextDocument(
 }
 
 export async function showReaderModeDocument(document: vscode.TextDocument) {
-  if (document.uri.scheme === config['schemeName']) {
-    return
-  }
-
   await switchTextDocument(document.uri, toReaderModeUri(document.uri))
 }
 
-export async function showFileDocument(
-  document: vscode.TextDocument,
-  bypassAutoReaderMode = false
-) {
-  if (document.uri.scheme !== config['schemeName']) {
-    return
-  }
-
-  await switchTextDocument(
-    document.uri,
-    toOriginalUri(document.uri, bypassAutoReaderMode)
-  )
+export async function showOriginalDocument(document: vscode.TextDocument) {
+  await switchTextDocument(document.uri, toOriginalUri(document.uri))
 }

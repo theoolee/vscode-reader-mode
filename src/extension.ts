@@ -1,6 +1,7 @@
 import vscode from 'vscode'
-import { CommandRegister } from './register/command'
-import { EventHandlerRegister } from './register/event-handler'
+import { AutoReaderModeRegister } from './register/auto-reader-mode'
+import { ToggleCommandRegister } from './register/toggle-command'
+import { CommentHighlightRegister } from './register/comment-highlight'
 import { FileSystemRegister } from './register/file-system'
 import {
   GeneralLanguageFeatureRegister,
@@ -15,14 +16,16 @@ export function activate(context: vscode.ExtensionContext) {
   const specificLanguageFeatureRegister = new SpecificLanguageFeatureRegister(
     context
   )
-  const commandRegister = new CommandRegister(context)
-  const eventHandlerRegister = new EventHandlerRegister(context)
+  const autoReaderModeRegister = new AutoReaderModeRegister(context)
+  const commentHighlightRegister = new CommentHighlightRegister(context)
+  const toggleCommandRegister = new ToggleCommandRegister(context)
 
   fileSystemRegister.register()
   generalLanguageFeatureRegister.register()
   fileSystemRegister.onBeforeOpenFile((uri) => {
     specificLanguageFeatureRegister.register(uri)
   })
-  eventHandlerRegister.register()
-  commandRegister.register()
+  autoReaderModeRegister.register()
+  commentHighlightRegister.register()
+  toggleCommandRegister.register()
 }

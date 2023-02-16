@@ -2,14 +2,9 @@ import vscode from 'vscode'
 import { config } from '../config'
 import { minimatch } from 'minimatch'
 
-const bypassedAutoReaderModePathSet = new Set<string>()
 const originalUriSchemeMap: Record<string, string> = {}
 
-export function shouldUriAutoReaderMode(uri: vscode.Uri) {
-  if (bypassedAutoReaderModePathSet.has(uri.toString())) {
-    return false
-  }
-
+export function isUriMatchAutoReaderMode(uri: vscode.Uri) {
   const isOutOfWorkspaceFolder =
     config['auto.outOfWorkspace'] &&
     !vscode.workspace.workspaceFolders?.some((folder) =>
@@ -23,7 +18,7 @@ export function shouldUriAutoReaderMode(uri: vscode.Uri) {
   return isOutOfWorkspaceFolder || isMatchPattern
 }
 
-export function toOriginalUri(uri: vscode.Uri, bypassAutoReaderMode = false) {
+export function toOriginalUri(uri: vscode.Uri) {
   if (uri.scheme !== config['schemeName']) {
     return uri
   }
@@ -32,10 +27,6 @@ export function toOriginalUri(uri: vscode.Uri, bypassAutoReaderMode = false) {
     scheme: originalUriSchemeMap[uri.toString()],
   })
 
-  if (bypassAutoReaderMode) {
-    bypassedAutoReaderModePathSet.add(originalUri.toString())
-  }
-
   return originalUri
 }
 
@@ -43,8 +34,6 @@ export function toReaderModeUri(uri: vscode.Uri) {
   if (uri.scheme === config['schemeName']) {
     return uri
   }
-
-  bypassedAutoReaderModePathSet.delete(uri.toString())
 
   const readerModeUri = uri.with({
     scheme: config['schemeName'],
