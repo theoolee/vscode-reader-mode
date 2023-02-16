@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.1.6: Feb 16, 2023
+
+- fix: automatic reader mode does not work
+
 ## Version 0.1.5: Feb 16, 2023
 
 - fix: can not activate reader mode after workspace restored
