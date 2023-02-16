@@ -16,11 +16,11 @@ export class CommandRegister extends BaseRegister {
           }
 
           switch (document.uri.scheme) {
-            case 'file':
-              await showReaderModeDocument(document)
-              break
             case config['schemeName']:
               await showFileDocument(document, true)
+              break
+            default:
+              await showReaderModeDocument(document)
               break
           }
         }

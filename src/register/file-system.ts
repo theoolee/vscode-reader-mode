@@ -1,5 +1,5 @@
 import vscode from 'vscode'
-import { toFileUri } from '../util/uri'
+import { toOriginalUri } from '../util/uri'
 import { BaseRegister } from './base'
 
 class FileSystemProvider implements vscode.FileSystemProvider {
@@ -11,15 +11,27 @@ class FileSystemProvider implements vscode.FileSystemProvider {
   onDidChangeFile = this.onDidChangeFileEmitter.event
   onBeforeOpenFile = this.onBeforeOpenFileEmitter.event
 
-  readFile(uri: vscode.Uri) {
+  async readFile(uri: vscode.Uri) {
     this.onBeforeOpenFileEmitter.fire(uri)
-    return vscode.workspace.fs.readFile(toFileUri(uri))
+    const originalUri = toOriginalUri(uri)
+
+    if (originalUri.scheme !== 'file') {
+      return Buffer.from(
+        (await vscode.workspace.openTextDocument(originalUri)).getText()
+      )
+    }
+
+    return vscode.workspace.fs.readFile(originalUri)
   }
 
   watch(uri: vscode.Uri) {
-    const watcher = vscode.workspace.createFileSystemWatcher(
-      toFileUri(uri).path
-    )
+    const originalUri = toOriginalUri(uri)
+
+    if (originalUri.scheme !== 'file') {
+      return new vscode.Disposable(() => {})
+    }
+
+    const watcher = vscode.workspace.createFileSystemWatcher(originalUri.path)
 
     watcher.onDidChange(() => {
       this.onDidChangeFileEmitter.fire([
@@ -52,28 +64,34 @@ class FileSystemProvider implements vscode.FileSystemProvider {
   }
 
   stat(uri: vscode.Uri) {
-    return vscode.workspace.fs.stat(toFileUri(uri))
+    const originalUri = toOriginalUri(uri)
+
+    if (originalUri.scheme !== 'file') {
+      return {
+        type: vscode.FileType.File,
+        ctime: 0,
+        mtime: 0,
+        size: 0,
+      }
+    }
+
+    return vscode.workspace.fs.stat(originalUri)
   }
 
   readDirectory(uri: vscode.Uri) {
-    return vscode.workspace.fs.readDirectory(toFileUri(uri))
+    const originalUri = toOriginalUri(uri)
+
+    if (originalUri.scheme !== 'file') {
+      return []
+    }
+
+    return vscode.workspace.fs.readDirectory(originalUri)
   }
 
-  createDirectory(uri: vscode.Uri) {
-    return vscode.workspace.fs.createDirectory(toFileUri(uri))
-  }
-
-  writeFile(uri: vscode.Uri, content: Uint8Array) {
-    return vscode.workspace.fs.writeFile(toFileUri(uri), content)
-  }
-
-  delete(uri: vscode.Uri, options: { readonly recursive: boolean }) {
-    return vscode.workspace.fs.delete(toFileUri(uri))
-  }
-
-  rename(oldUri: vscode.Uri, newUri: vscode.Uri) {
-    return vscode.workspace.fs.rename(toFileUri(oldUri), toFileUri(newUri))
-  }
+  createDirectory() {}
+  writeFile() {}
+  delete() {}
+  rename() {}
 }
 
 export class FileSystemRegister extends BaseRegister {

@@ -4,7 +4,7 @@ import {
   propagateReaderModeOnLocationResult,
   tryCommand,
 } from '../util/language'
-import { toFileUri } from '../util/uri'
+import { toOriginalUri } from '../util/uri'
 import { BaseRegister } from './base'
 
 class DocumentHighlightProvider implements vscode.DocumentHighlightProvider {
@@ -14,7 +14,7 @@ class DocumentHighlightProvider implements vscode.DocumentHighlightProvider {
   ) {
     const result: vscode.DocumentHighlight[] = await tryCommand(
       'vscode.executeDocumentHighlights',
-      toFileUri(document.uri),
+      toOriginalUri(document.uri),
       position
     )
 
@@ -26,7 +26,7 @@ class DocumentLinkProvider implements vscode.DocumentLinkProvider {
   async provideDocumentLinks(document: vscode.TextDocument) {
     const result: vscode.DocumentLink[] = await tryCommand(
       'vscode.executeLinkProvider',
-      toFileUri(document.uri)
+      toOriginalUri(document.uri)
     )
 
     result.forEach((item) => {
@@ -46,7 +46,7 @@ class DefinitionProvider implements vscode.DefinitionProvider {
   ) {
     const result: vscode.Location[] | vscode.LocationLink[] = await tryCommand(
       'vscode.executeDefinitionProvider',
-      toFileUri(document.uri),
+      toOriginalUri(document.uri),
       position
     )
 
@@ -61,7 +61,7 @@ class TypeDefinitionProvider implements vscode.TypeDefinitionProvider {
   ) {
     const result: vscode.Location[] | vscode.LocationLink[] = await tryCommand(
       'vscode.executeTypeDefinitionProvider',
-      toFileUri(document.uri),
+      toOriginalUri(document.uri),
       position
     )
 
@@ -76,7 +76,7 @@ class DeclarationProvider implements vscode.DeclarationProvider {
   ) {
     const result: vscode.Location[] | vscode.LocationLink[] = await tryCommand(
       'vscode.executeDeclarationProvider',
-      toFileUri(document.uri),
+      toOriginalUri(document.uri),
       position
     )
 
@@ -91,7 +91,7 @@ class ImplementationProvider implements vscode.ImplementationProvider {
   ) {
     const result: vscode.Location[] | vscode.LocationLink[] = await tryCommand(
       'vscode.executeImplementationProvider',
-      toFileUri(document.uri),
+      toOriginalUri(document.uri),
       position
     )
 
@@ -106,7 +106,7 @@ class ReferenceProvider implements vscode.ReferenceProvider {
   ) {
     const result: vscode.Location[] = await tryCommand(
       'vscode.executeReferenceProvider',
-      toFileUri(document.uri),
+      toOriginalUri(document.uri),
       position
     )
 
@@ -118,7 +118,7 @@ class HoverProvider implements vscode.HoverProvider {
   async provideHover(document: vscode.TextDocument, position: vscode.Position) {
     const result: vscode.Hover[] = await tryCommand(
       'vscode.executeHoverProvider',
-      toFileUri(document.uri),
+      toOriginalUri(document.uri),
       position
     )
 
@@ -130,7 +130,7 @@ class InlayHintsProvider implements vscode.InlayHintsProvider {
   async provideInlayHints(document: vscode.TextDocument, range: vscode.Range) {
     const result: vscode.InlayHint[] = await tryCommand(
       'vscode.executeInlayHintProvider',
-      toFileUri(document.uri),
+      toOriginalUri(document.uri),
       range
     )
 
@@ -143,7 +143,7 @@ class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     const result: vscode.SymbolInformation[] | vscode.DocumentSymbol[] =
       await tryCommand(
         'vscode.executeDocumentSymbolProvider',
-        toFileUri(document.uri)
+        toOriginalUri(document.uri)
       )
 
     return result
@@ -154,7 +154,7 @@ class DocumentColorProvider implements vscode.DocumentColorProvider {
   async provideDocumentColors(document: vscode.TextDocument) {
     const result: vscode.ColorInformation[] = await tryCommand(
       'vscode.executeDocumentColorProvider',
-      toFileUri(document.uri)
+      toOriginalUri(document.uri)
     )
 
     return result
@@ -167,13 +167,13 @@ class DocumentColorProvider implements vscode.DocumentColorProvider {
       readonly range: vscode.Range
     }
   ) {
-    await vscode.workspace.openTextDocument(toFileUri(context.document.uri))
+    await vscode.workspace.openTextDocument(toOriginalUri(context.document.uri))
     const result: vscode.ColorPresentation[] =
       await vscode.commands.executeCommand(
         'vscode.provideColorPresentations',
         color,
         {
-          uri: toFileUri(context.document.uri),
+          uri: toOriginalUri(context.document.uri),
           range: context.range,
         }
       )
@@ -188,7 +188,7 @@ class DocumentSemanticTokensProvider
   async provideDocumentSemanticTokens(document: vscode.TextDocument) {
     const result: vscode.SemanticTokens = await tryCommand(
       'vscode.provideDocumentSemanticTokens',
-      toFileUri(document.uri)
+      toOriginalUri(document.uri)
     )
 
     return result
@@ -252,7 +252,7 @@ export class SpecificLanguageFeatureRegister extends BaseRegister {
   private static registeredLanguageIdSet = new Set<string>()
 
   async register(uri: vscode.Uri) {
-    const document = await vscode.workspace.openTextDocument(uri)
+    const document = await vscode.workspace.openTextDocument(toOriginalUri(uri))
 
     if (
       SpecificLanguageFeatureRegister.registeredLanguageIdSet.has(
@@ -273,7 +273,7 @@ export class SpecificLanguageFeatureRegister extends BaseRegister {
     const document = await vscode.workspace.openTextDocument(uri)
     const legend: vscode.SemanticTokensLegend = await tryCommand(
       'vscode.provideDocumentSemanticTokensLegend',
-      toFileUri(uri)
+      toOriginalUri(uri)
     )
 
     this.context.subscriptions.push(

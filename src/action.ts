@@ -6,7 +6,7 @@ import {
   getActiveTabIndex,
   setActiveTabIndex,
 } from './util/misc'
-import { toFileUri, toReaderModeUri } from './util/uri'
+import { toOriginalUri, toReaderModeUri } from './util/uri'
 
 async function switchTextDocument(
   sourceUri: vscode.Uri,
@@ -31,7 +31,7 @@ async function switchTextDocument(
 }
 
 export async function showReaderModeDocument(document: vscode.TextDocument) {
-  if (document.uri.scheme !== 'file') {
+  if (document.uri.scheme === config['schemeName']) {
     return
   }
 
@@ -48,6 +48,6 @@ export async function showFileDocument(
 
   await switchTextDocument(
     document.uri,
-    toFileUri(document.uri, bypassAutoReaderMode)
+    toOriginalUri(document.uri, bypassAutoReaderMode)
   )
 }
