@@ -2,10 +2,10 @@ import vscode from 'vscode'
 import { config } from '../config'
 import { minimatch } from 'minimatch'
 
-const bypassAutoReaderModeUriSet = new Set<string>()
+const bypassedAutoReaderModePathSet = new Set<string>()
 
 export function shouldUriAutoReaderMode(uri: vscode.Uri) {
-  if (uri.scheme !== 'file') {
+  if (uri.scheme !== 'file' || bypassedAutoReaderModePathSet.has(uri.path)) {
     return false
   }
 
@@ -19,26 +19,35 @@ export function shouldUriAutoReaderMode(uri: vscode.Uri) {
     minimatch(uri.path, pattern, { dot: true })
   )
 
-  return (
-    !bypassAutoReaderModeUriSet.delete(uri.toString()) &&
-    (isOutOfWorkspaceFolder || isMatchPattern)
-  )
+  return isOutOfWorkspaceFolder || isMatchPattern
 }
 
 export function toFileUri(uri: vscode.Uri, bypassAutoReaderMode = false) {
-  const fileUri = uri.with({
-    scheme: 'file',
-  })
+  let uriToReturn = uri
 
-  if (bypassAutoReaderMode) {
-    bypassAutoReaderModeUriSet.add(fileUri.toString())
+  if (uri.scheme !== 'file') {
+    uriToReturn = uri.with({
+      scheme: 'file',
+    })
   }
 
-  return fileUri
+  if (bypassAutoReaderMode) {
+    bypassedAutoReaderModePathSet.add(uriToReturn.path)
+  }
+
+  return uriToReturn
 }
 
 export function toReaderModeUri(uri: vscode.Uri) {
-  return uri.with({
-    scheme: config['schemeName'],
-  })
+  let uriToReturn = uri
+
+  if (uri.scheme !== config['schemeName']) {
+    uriToReturn = uri.with({
+      scheme: config['schemeName'],
+    })
+  }
+
+  bypassedAutoReaderModePathSet.delete(uriToReturn.path)
+
+  return uriToReturn
 }
