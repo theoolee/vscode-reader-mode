@@ -2,7 +2,9 @@ import vscode from 'vscode'
 
 export async function closeActiveEditor() {
   await vscode.window.activeTextEditor?.document.save()
-  await vscode.commands.executeCommand('workbench.action.closeActiveEditor')
+  // This method seems much faster than the commented out method below.
+  vscode.window.activeTextEditor?.hide()
+  // await vscode.commands.executeCommand('workbench.action.closeActiveEditor')
 }
 
 export function getActiveEditorSelection() {
