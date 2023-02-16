@@ -2,7 +2,7 @@ import vscode from 'vscode'
 import { config } from '../config'
 import { minimatch } from 'minimatch'
 
-const originalUriSchemeMap: Record<string, string> = {}
+const delimiter = `%__${config['schemeName']}__%`
 
 export function isUriMatchAutoReaderMode(uri: vscode.Uri) {
   const isOutOfWorkspaceFolder =
@@ -23,8 +23,11 @@ export function toOriginalUri(uri: vscode.Uri) {
     return uri
   }
 
+  const [scheme, fragment] = uri.fragment.split(delimiter)
+
   const originalUri = uri.with({
-    scheme: originalUriSchemeMap[uri.toString()],
+    scheme,
+    fragment,
   })
 
   return originalUri
@@ -37,9 +40,8 @@ export function toReaderModeUri(uri: vscode.Uri) {
 
   const readerModeUri = uri.with({
     scheme: config['schemeName'],
+    fragment: `${uri.scheme}${delimiter}${uri.fragment}`,
   })
-
-  originalUriSchemeMap[readerModeUri.toString()] = uri.scheme
 
   return readerModeUri
 }
