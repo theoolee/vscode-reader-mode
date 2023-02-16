@@ -1,10 +1,10 @@
 import vscode from 'vscode'
 import {
-  propagateReaderMode,
-  propagateReaderModeOnLocationResult,
+  correctSymbolResult,
+  correctLocationResult,
   tryCommand,
 } from '../util/language'
-import { toOriginalUri } from '../util/uri'
+import { toOriginalUri, toReaderModeUri } from '../util/uri'
 import { BaseRegister } from './base'
 
 class DocumentHighlightProvider implements vscode.DocumentHighlightProvider {
@@ -31,7 +31,7 @@ class DocumentLinkProvider implements vscode.DocumentLinkProvider {
 
     result.forEach((item) => {
       if (item.target?.scheme === 'file') {
-        item.target = propagateReaderMode(document.uri, item.target)
+        item.target = toReaderModeUri(item.target)
       }
     })
 
@@ -50,7 +50,7 @@ class DefinitionProvider implements vscode.DefinitionProvider {
       position
     )
 
-    return propagateReaderModeOnLocationResult(document.uri, result)
+    return correctLocationResult(result)
   }
 }
 
@@ -65,7 +65,7 @@ class TypeDefinitionProvider implements vscode.TypeDefinitionProvider {
       position
     )
 
-    return propagateReaderModeOnLocationResult(document.uri, result)
+    return correctLocationResult(result)
   }
 }
 
@@ -80,7 +80,7 @@ class DeclarationProvider implements vscode.DeclarationProvider {
       position
     )
 
-    return propagateReaderModeOnLocationResult(document.uri, result)
+    return correctLocationResult(result)
   }
 }
 
@@ -95,7 +95,7 @@ class ImplementationProvider implements vscode.ImplementationProvider {
       position
     )
 
-    return propagateReaderModeOnLocationResult(document.uri, result)
+    return correctLocationResult(result)
   }
 }
 
@@ -110,7 +110,7 @@ class ReferenceProvider implements vscode.ReferenceProvider {
       position
     )
 
-    return propagateReaderModeOnLocationResult(document.uri, result)
+    return correctLocationResult(result)
   }
 }
 
@@ -146,7 +146,7 @@ class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
         toOriginalUri(document.uri)
       )
 
-    return result
+    return correctSymbolResult(result)
   }
 }
 
@@ -177,6 +177,61 @@ class DocumentColorProvider implements vscode.DocumentColorProvider {
           range: context.range,
         }
       )
+
+    return result
+  }
+}
+
+class SelectionRangeProvider implements vscode.SelectionRangeProvider {
+  async provideSelectionRanges(
+    document: vscode.TextDocument,
+    positions: readonly vscode.Position[]
+  ) {
+    const result: vscode.SelectionRange[] = await tryCommand(
+      'vscode.executeSelectionRangeProvider',
+      toOriginalUri(document.uri),
+      positions
+    )
+
+    return result
+  }
+}
+
+class CodeLensProvider implements vscode.CodeLensProvider {
+  async provideCodeLenses(document: vscode.TextDocument) {
+    const result: vscode.CodeLens[] = await tryCommand(
+      'vscode.executeCodeLensProvider',
+      toOriginalUri(document.uri)
+    )
+
+    return result
+  }
+}
+
+class TypeHierarchyProvider implements vscode.TypeHierarchyProvider {
+  async prepareTypeHierarchy(
+    document: vscode.TextDocument,
+    position: vscode.Position
+  ) {
+    const result: vscode.TypeHierarchyItem[] = await tryCommand(
+      'vscode.prepareTypeHierarchy',
+      toOriginalUri(document.uri),
+      position
+    )
+
+    return result
+  }
+
+  async provideTypeHierarchySupertypes(item: vscode.TypeHierarchyItem) {
+    const result: vscode.TypeHierarchyItem[] =
+      await vscode.commands.executeCommand('vscode.provideSupertypes', item)
+
+    return result
+  }
+
+  async provideTypeHierarchySubtypes(item: vscode.TypeHierarchyItem) {
+    const result: vscode.TypeHierarchyItem[] =
+      await vscode.commands.executeCommand('vscode.provideSubtypes', item)
 
     return result
   }
@@ -241,6 +296,18 @@ export class GeneralLanguageFeatureRegister extends BaseRegister {
       vscode.languages.registerColorProvider(
         this.documentSelector,
         new DocumentColorProvider()
+      ),
+      vscode.languages.registerSelectionRangeProvider(
+        this.documentSelector,
+        new SelectionRangeProvider()
+      ),
+      vscode.languages.registerCodeLensProvider(
+        this.documentSelector,
+        new CodeLensProvider()
+      ),
+      vscode.languages.registerTypeHierarchyProvider(
+        this.documentSelector,
+        new TypeHierarchyProvider()
       )
     )
   }

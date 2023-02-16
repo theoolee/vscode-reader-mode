@@ -17,6 +17,7 @@ Provides an elegant and secure way to read library code.
 Manually toggle reader mode:
 
 - Open the command palette and run `Reader Mode: Toggle Reader Mode`.
+- Manually changing the files that match the auto reader mode rules from reader mode to normal will disable the auto reader mode for these files until you restart VS Code, or you can manually toggle them back to reader mode.
 
 Automatically open files in reader mode:
 
@@ -36,12 +37,6 @@ Enable reader mode when opening files by glob matching:
 "reader-mode.auto.glob": [
   "**/node_modules/**"
 ]
-```
-
-Propagate reader mode when jumping from a reader mode file to another file:
-
-```json
-"reader-mode.propagate": true
 ```
 
 Change the comment style in reader mode, you should use the string form of valid CSS values here:

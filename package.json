@@ -39,11 +39,6 @@
     "configuration": {
       "title": "Reader Mode",
       "properties": {
-        "reader-mode.propagate": {
-          "type": "boolean",
-          "default": true,
-          "description": "Whether to propagate reader mode when jumping from a reader mode file to another file."
-        },
         "reader-mode.auto.outOfWorkspace": {
           "type": "boolean",
           "default": true,
