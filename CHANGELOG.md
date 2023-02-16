@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.1.8: Feb 17, 2023
+
+- fix: can not load file after workspace restored
+
 ## Version 0.1.7: Feb 17, 2023
 
 - feat: support for schemes other than file scheme, java projects now supported

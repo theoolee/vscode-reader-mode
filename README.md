@@ -17,7 +17,7 @@ Provides an elegant and secure way to read library code.
 Manually toggle reader mode:
 
 - Open the command palette and run `Reader Mode: Toggle Reader Mode`.
-- Manually changing the files that match the auto reader mode rules from reader mode to normal will disable the auto reader mode for these files until you restart VS Code, or you can manually toggle them back to reader mode.
+- Manually switching the files that match the auto reader mode rules from reader mode to normal will disable the auto reader mode for these files until you reload window, or you can manually toggle them back to reader mode.
 
 Automatically open files in reader mode:
 
