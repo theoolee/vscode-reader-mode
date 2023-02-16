@@ -1,35 +1,56 @@
 import vscode from 'vscode'
-import { closeActiveEditor } from './util/editor'
+import { config } from './config'
+import {
+  closeActiveEditor,
+  getActiveEditorSelection,
+  getActiveTabIndex,
+  setActiveTabIndex,
+} from './util/misc'
 import { toFileUri, toReaderModeUri } from './util/uri'
 
-export async function showReaderModeDocument(
-  document: vscode.TextDocument,
-  options?: Omit<vscode.TextDocumentShowOptions, 'preview'>
-) {
+export async function showReaderModeDocument(document: vscode.TextDocument) {
+  if (document.uri.scheme !== 'file') {
+    return
+  }
+
+  await vscode.window.showTextDocument(document)
+  const tabIndex = getActiveTabIndex()
+  const selection = getActiveEditorSelection()
+  await closeActiveEditor()
+
   const readerModeDocument = await vscode.workspace.openTextDocument(
     toReaderModeUri(document.uri)
   )
 
-  await closeActiveEditor(document)
   await vscode.window.showTextDocument(readerModeDocument, {
-    ...options,
     preview: false,
+    selection,
   })
+
+  setActiveTabIndex(tabIndex)
 }
 
 export async function showFileDocument(
   document: vscode.TextDocument,
-  options?: Omit<vscode.TextDocumentShowOptions, 'preview'> & {
-    bypassAutoReaderMode?: boolean
-  }
+  bypassAutoReaderMode = false
 ) {
+  if (document.uri.scheme !== config['schemeName']) {
+    return
+  }
+
+  await vscode.window.showTextDocument(document)
+  const tabIndex = getActiveTabIndex()
+  const selection = getActiveEditorSelection()
+  await closeActiveEditor()
+
   const fileDocument = await vscode.workspace.openTextDocument(
-    toFileUri(document.uri, options?.bypassAutoReaderMode)
+    toFileUri(document.uri, bypassAutoReaderMode)
   )
 
-  await closeActiveEditor(document)
   await vscode.window.showTextDocument(fileDocument, {
-    ...options,
     preview: false,
+    selection,
   })
+
+  setActiveTabIndex(tabIndex)
 }

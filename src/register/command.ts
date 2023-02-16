@@ -9,25 +9,19 @@ export class CommandRegister extends BaseRegister {
       vscode.commands.registerCommand(
         config['toggleReaderModeCommandId'],
         async () => {
-          const activeTextEditor = vscode.window.activeTextEditor
+          const document = vscode.window.activeTextEditor?.document
 
-          if (!activeTextEditor) {
+          if (!document) {
             return
           }
 
-          const document = activeTextEditor?.document
-
           switch (document.uri.scheme) {
             case 'file':
-              showReaderModeDocument(document, {
-                selection: activeTextEditor.selection,
-              })
+              await showReaderModeDocument(document)
               break
             case config['schemeName']:
-              showFileDocument(document, {
-                selection: activeTextEditor.selection,
-                bypassAutoReaderMode: true,
-              })
+              await showFileDocument(document, true)
+              break
           }
         }
       )

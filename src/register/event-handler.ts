@@ -38,12 +38,7 @@ export class EventHandlerRegister extends BaseRegister {
         const document = editor.document
 
         if (shouldUriAutoReaderMode(document.uri)) {
-          // In cases the editor is opened by code navigation, we should wait for the editor to be ready,
-          // after which vscode sets the selection, then we can get the correct selection.
-          await vscode.window.showTextDocument(document)
-          showReaderModeDocument(document, {
-            selection: editor.selection,
-          })
+          showReaderModeDocument(document)
         }
       })
     )
