@@ -52,9 +52,13 @@ Change the comment style in reader mode, you should use the string form of valid
 
 ## How It Works
 
-This extension registers a `reader-mode` file scheme, and redirects file content and most of the language features to this scheme. Hijacking files open from explorer or toggling read-only mode is just closing the original file and opening a `reader-mode` one.
+This extension registers a `reader-mode` file scheme, and redirects file content and most of the language features to this scheme. Hijacking files open from explorer or toggling read-only mode is just closing the original editor and opening a `reader-mode` one.
 
 ## Known Issues
 
 - Flickering when toggling files, which is because the extension API doesn't provide a way to hijack files open.
 - Duplicated definition or hover when reading files of embedded languages, like typescript.
+
+## Contributing
+
+If you have any ideas or suggestions, please feel free to open an issue or pull request.
