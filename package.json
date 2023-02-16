@@ -25,7 +25,7 @@
     "readonly"
   ],
   "activationEvents": [
-    "*"
+    "onFileSystem:reader-mode"
   ],
   "main": "out/src/extension.js",
   "contributes": {
