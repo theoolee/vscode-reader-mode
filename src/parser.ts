@@ -117,13 +117,8 @@ function getCommentDelimiter(languageId: string): CommentDelimiter {
         end: '*/',
       }
       break
-    case 'python':
-      commentDelimiter.block = {
-        start: '"""',
-        end: '"""',
-      }
-      break
     case 'ruby':
+    case 'perl':
       commentDelimiter.block = {
         start: '=begin',
         end: '=end',
@@ -149,23 +144,26 @@ function getCommentDelimiter(languageId: string): CommentDelimiter {
 }
 
 export function parseComment(document: vscode.TextDocument): CommentRecords {
-  const comments: CommentRecords = {
+  const commentRecords: CommentRecords = {
     partial: [],
     wholeLine: [],
   }
-  const delimiter = getCommentDelimiter(document.languageId)
+  const commentDelimiter = getCommentDelimiter(document.languageId)
   const code = document.getText()
   const blockRanges: vscode.Range[] = []
   const whiteSpaceRegex = /^\s*$/
   const lineRegex =
-    delimiter?.line &&
-    new RegExp(`([^\\n]*?)(${escapeRegExp(delimiter.line)}[^\\n]*)`, 'gs')
-  const blockRegex =
-    delimiter?.block &&
+    commentDelimiter?.line &&
     new RegExp(
-      `([^\\n]*?)(${escapeRegExp(delimiter.block.start)}.*?${escapeRegExp(
-        delimiter.block.end
-      )})(?=([^\\n]*))`,
+      `([^\\n]*?)(${escapeRegExp(commentDelimiter.line)}[^\\n]*)`,
+      'gs'
+    )
+  const blockRegex =
+    commentDelimiter?.block &&
+    new RegExp(
+      `([^\\n]*?)(${escapeRegExp(
+        commentDelimiter.block.start
+      )}.*?${escapeRegExp(commentDelimiter.block.end)})(?=([^\\n]*))`,
       'gs'
     )
 
@@ -180,9 +178,9 @@ export function parseComment(document: vscode.TextDocument): CommentRecords {
       )
 
       if (whiteSpaceRegex.test(`${match[1]}${match[3]}`)) {
-        comments.wholeLine.push(range)
+        commentRecords.wholeLine.push(range)
       } else {
-        comments.partial.push(range)
+        commentRecords.partial.push(range)
       }
 
       blockRanges.push(range)
@@ -201,13 +199,13 @@ export function parseComment(document: vscode.TextDocument): CommentRecords {
 
       if (!blockRanges.some((blockRange) => blockRange.contains(range.start))) {
         if (whiteSpaceRegex.test(match[1])) {
-          comments.wholeLine.push(range)
+          commentRecords.wholeLine.push(range)
         } else {
-          comments.partial.push(range)
+          commentRecords.partial.push(range)
         }
       }
     })
   }
 
-  return comments
+  return commentRecords
 }

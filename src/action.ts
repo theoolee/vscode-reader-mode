@@ -8,26 +8,34 @@ import {
 } from './util/misc'
 import { toFileUri, toReaderModeUri } from './util/uri'
 
+async function switchTextDocument(
+  sourceUri: vscode.Uri,
+  targetUri: vscode.Uri
+) {
+  const [sourceDocument, targetDocument] = await Promise.all([
+    vscode.workspace.openTextDocument(sourceUri),
+    vscode.workspace.openTextDocument(targetUri),
+  ])
+
+  await vscode.window.showTextDocument(sourceDocument)
+  const tabIndex = getActiveTabIndex()
+  const selection = getActiveEditorSelection()
+  await closeActiveEditor()
+
+  await vscode.window.showTextDocument(targetDocument, {
+    preview: false,
+    selection,
+  })
+
+  await setActiveTabIndex(tabIndex)
+}
+
 export async function showReaderModeDocument(document: vscode.TextDocument) {
   if (document.uri.scheme !== 'file') {
     return
   }
 
-  await vscode.window.showTextDocument(document)
-  const tabIndex = getActiveTabIndex()
-  const selection = getActiveEditorSelection()
-  await closeActiveEditor()
-
-  const readerModeDocument = await vscode.workspace.openTextDocument(
-    toReaderModeUri(document.uri)
-  )
-
-  await vscode.window.showTextDocument(readerModeDocument, {
-    preview: false,
-    selection,
-  })
-
-  setActiveTabIndex(tabIndex)
+  await switchTextDocument(document.uri, toReaderModeUri(document.uri))
 }
 
 export async function showFileDocument(
@@ -38,19 +46,8 @@ export async function showFileDocument(
     return
   }
 
-  await vscode.window.showTextDocument(document)
-  const tabIndex = getActiveTabIndex()
-  const selection = getActiveEditorSelection()
-  await closeActiveEditor()
-
-  const fileDocument = await vscode.workspace.openTextDocument(
+  await switchTextDocument(
+    document.uri,
     toFileUri(document.uri, bypassAutoReaderMode)
   )
-
-  await vscode.window.showTextDocument(fileDocument, {
-    preview: false,
-    selection,
-  })
-
-  setActiveTabIndex(tabIndex)
 }
