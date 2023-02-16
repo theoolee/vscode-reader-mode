@@ -246,7 +246,7 @@ export class GeneralLanguageFeatureRegister extends BaseRegister {
   }
 }
 
-export class SpecifiedLanguageFeatureRegister extends BaseRegister {
+export class SpecificLanguageFeatureRegister extends BaseRegister {
   private static documentSemanticTokensProvider =
     new DocumentSemanticTokensProvider()
   private static registeredLanguageIdSet = new Set<string>()
@@ -255,14 +255,14 @@ export class SpecifiedLanguageFeatureRegister extends BaseRegister {
     const document = await vscode.workspace.openTextDocument(uri)
 
     if (
-      SpecifiedLanguageFeatureRegister.registeredLanguageIdSet.has(
+      SpecificLanguageFeatureRegister.registeredLanguageIdSet.has(
         document.languageId
       )
     ) {
       return
     }
 
-    SpecifiedLanguageFeatureRegister.registeredLanguageIdSet.add(
+    SpecificLanguageFeatureRegister.registeredLanguageIdSet.add(
       document.languageId
     )
 
@@ -279,7 +279,7 @@ export class SpecifiedLanguageFeatureRegister extends BaseRegister {
     this.context.subscriptions.push(
       vscode.languages.registerDocumentSemanticTokensProvider(
         { ...this.documentSelector, language: document.languageId },
-        SpecifiedLanguageFeatureRegister.documentSemanticTokensProvider,
+        SpecificLanguageFeatureRegister.documentSemanticTokensProvider,
         legend
       )
     )

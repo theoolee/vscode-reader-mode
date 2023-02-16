@@ -4,7 +4,7 @@ import { EventHandlerRegister } from './register/event-handler'
 import { FileSystemRegister } from './register/file-system'
 import {
   GeneralLanguageFeatureRegister,
-  SpecifiedLanguageFeatureRegister,
+  SpecificLanguageFeatureRegister,
 } from './register/language-feature'
 
 export function activate(context: vscode.ExtensionContext) {
@@ -12,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
   const generalLanguageFeatureRegister = new GeneralLanguageFeatureRegister(
     context
   )
-  const specifiedLanguageFeatureRegister = new SpecifiedLanguageFeatureRegister(
+  const specificLanguageFeatureRegister = new SpecificLanguageFeatureRegister(
     context
   )
   const commandRegister = new CommandRegister(context)
@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
   fileSystemRegister.register()
   generalLanguageFeatureRegister.register()
   fileSystemRegister.onBeforeOpenFile((uri) => {
-    specifiedLanguageFeatureRegister.register(uri)
+    specificLanguageFeatureRegister.register(uri)
   })
   eventHandlerRegister.register()
   commandRegister.register()
