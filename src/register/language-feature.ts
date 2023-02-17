@@ -1,4 +1,5 @@
 import vscode from 'vscode'
+import { config } from '../config'
 import {
   correctSymbolResult,
   correctLocationResult,
@@ -253,6 +254,25 @@ class DocumentSemanticTokensProvider
 export class GeneralLanguageFeatureRegister extends BaseRegister {
   protected doRegister() {
     this.context.subscriptions.push(
+      vscode.window.onDidChangeActiveTextEditor(async (editor) => {
+        const document = editor?.document
+
+        if (!document) {
+          return
+        }
+
+        if (document.uri.scheme === config['schemeName']) {
+          const hijackedLanguageId = config['hijackLanguageId'](
+            document.languageId
+          )
+
+          hijackedLanguageId &&
+            vscode.languages.setTextDocumentLanguage(
+              document,
+              hijackedLanguageId
+            )
+        }
+      }),
       vscode.languages.registerDocumentHighlightProvider(
         this.documentSelector,
         new DocumentHighlightProvider()

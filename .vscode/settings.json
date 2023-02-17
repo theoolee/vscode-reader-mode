@@ -11,15 +11,22 @@
   "cSpell.words": [
     "anymatch",
     "Consolas",
+    "dosbatch",
+    "frontmatter",
     "haxe",
     "Intelli",
+    "mimetypes",
+    "objc",
     "objectpascal",
     "plsql",
+    "readwrite",
     "regexes",
     "rgba",
     "Supertypes",
     "theoolee",
-    "vscodelc"
+    "tsbuildinfo",
+    "vscodelc",
+    "watchmanconfig"
   ],
   "svg.preview.background": "dark-transparent"
 }

@@ -9,7 +9,8 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "allowJs": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "test", "package.json"]
+  "include": ["src", "test", "res/gen.js", "package.json"]
 }
