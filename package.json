@@ -1,6 +1,6 @@
 {
   "name": "reader-mode",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "publisher": "theoolee",
   "displayName": "Reader Mode",
   "description": "Provide Visual Studio Code with the same reader mode as IntelliJ.",

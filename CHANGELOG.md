@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.1.9: Feb 17, 2023
+
+- fix: duplicate language service of built-in language
+
 ## Version 0.1.8: Feb 17, 2023
 
 - fix: can not load file after workspace restored

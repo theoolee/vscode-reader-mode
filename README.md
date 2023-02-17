@@ -57,7 +57,6 @@ This extension registers a `reader-mode` file scheme, and redirects file content
 ## Known Issues
 
 - Flickering when toggling files, which is because the extension API doesn't provide a way to hijack files open.
-- Duplicated definition or hover when reading files of built-in languages, like typescript.
 
 ## Contributing
 
