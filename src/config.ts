@@ -1,6 +1,5 @@
 import vscode from 'vscode'
 import packageJson from '../package.json'
-import { convertLanguageId } from '../res/gen'
 
 type ConfigDefinitionToConfig<
   T extends Record<string, any>,
@@ -37,8 +36,7 @@ export const config = new Proxy<Config>({} as any, {
       case 'hijackLanguageId':
         return (languageId: string) =>
           hijackedLanguageIds.find(
-            (hijackedLanguageId) =>
-              hijackedLanguageId === convertLanguageId(languageId)
+            (hijackedLanguageId) => hijackedLanguageId === `__${languageId}__`
           )
       default:
         return vscode.workspace.getConfiguration(packageJson.name).get(key)

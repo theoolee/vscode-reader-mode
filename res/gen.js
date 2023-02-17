@@ -10,7 +10,7 @@ const files = glob.sync('*/package.json', {
 })
 
 const convertLanguageId = (id) => {
-  return `${id}_`
+  return `__${id}__`
 }
 
 packageJson.contributes.languages = []

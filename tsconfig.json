@@ -12,5 +12,5 @@
     "allowJs": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "test", "res/gen.js", "package.json"]
+  "include": ["src", "test", "package.json"]
 }

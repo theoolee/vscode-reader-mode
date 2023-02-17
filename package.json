@@ -1,6 +1,6 @@
 {
   "name": "reader-mode",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "publisher": "theoolee",
   "displayName": "Reader Mode",
   "description": "Provide Visual Studio Code with the same reader mode as IntelliJ.",
@@ -84,7 +84,7 @@
     },
     "languages": [
       {
-        "id": "css_",
+        "id": "__css__",
         "configuration": "./res/css/language-configuration.json",
         "aliases": [
           "CSS",
@@ -95,7 +95,7 @@
         ]
       },
       {
-        "id": "html_",
+        "id": "__html__",
         "configuration": "./res/html/language-configuration.json",
         "aliases": [
           "HTML",
@@ -112,7 +112,7 @@
         ]
       },
       {
-        "id": "json_",
+        "id": "__json__",
         "configuration": "./res/json/language-configuration.json",
         "aliases": [
           "JSON",
@@ -124,14 +124,14 @@
         ]
       },
       {
-        "id": "jsonc_",
+        "id": "__jsonc__",
         "configuration": "./res/json/language-configuration.json",
         "aliases": [
           "JSON with Comments"
         ]
       },
       {
-        "id": "markdown_",
+        "id": "__markdown__",
         "configuration": "./res/markdown-basics/language-configuration.json",
         "aliases": [
           "Markdown",
@@ -139,11 +139,11 @@
         ]
       },
       {
-        "id": "markdown-math_",
+        "id": "__markdown-math__",
         "aliases": []
       },
       {
-        "id": "php_",
+        "id": "__php__",
         "configuration": "./res/php/language-configuration.json",
         "aliases": [
           "PHP",
@@ -154,7 +154,7 @@
         ]
       },
       {
-        "id": "typescript_",
+        "id": "__typescript__",
         "configuration": "./res/typescript-basics/language-configuration.json",
         "aliases": [
           "TypeScript",
@@ -163,7 +163,7 @@
         ]
       },
       {
-        "id": "typescriptreact_",
+        "id": "__typescriptreact__",
         "configuration": "./res/typescript-basics/language-configuration.json",
         "aliases": [
           "TypeScript JSX",
@@ -172,15 +172,15 @@
         ]
       },
       {
-        "id": "jsonc_"
+        "id": "__jsonc__"
       },
       {
-        "id": "json_"
+        "id": "__json__"
       }
     ],
     "grammars": [
       {
-        "language": "css_",
+        "language": "__css__",
         "scopeName": "source.css",
         "path": "./res/css/syntaxes/css.tmLanguage.json",
         "tokenTypes": {
@@ -202,7 +202,7 @@
         }
       },
       {
-        "language": "html_",
+        "language": "__html__",
         "scopeName": "text.html.derivative",
         "path": "./res/html/syntaxes/html-derivative.tmLanguage.json",
         "embeddedLanguages": {
@@ -217,17 +217,17 @@
         }
       },
       {
-        "language": "json_",
+        "language": "__json__",
         "scopeName": "source.json",
         "path": "./res/json/syntaxes/JSON.tmLanguage.json"
       },
       {
-        "language": "jsonc_",
+        "language": "__jsonc__",
         "scopeName": "source.json.comments",
         "path": "./res/json/syntaxes/JSONC.tmLanguage.json"
       },
       {
-        "language": "markdown_",
+        "language": "__markdown__",
         "scopeName": "text.html.markdown",
         "path": "./res/markdown-basics/syntaxes/markdown.tmLanguage.json",
         "embeddedLanguages": {
@@ -279,7 +279,7 @@
         }
       },
       {
-        "language": "markdown-math_",
+        "language": "__markdown-math__",
         "scopeName": "text.html.markdown.math",
         "path": "./res/markdown-math/syntaxes/md-math.tmLanguage.json"
       },
@@ -304,12 +304,12 @@
         }
       },
       {
-        "language": "php_",
+        "language": "__php__",
         "scopeName": "source.php",
         "path": "./res/php/syntaxes/php.tmLanguage.json"
       },
       {
-        "language": "php_",
+        "language": "__php__",
         "scopeName": "text.html.php",
         "path": "./res/php/syntaxes/html.tmLanguage.json",
         "embeddedLanguages": {
@@ -323,7 +323,7 @@
         }
       },
       {
-        "language": "typescript_",
+        "language": "__typescript__",
         "scopeName": "source.ts",
         "path": "./res/typescript-basics/syntaxes/TypeScript.tmLanguage.json",
         "unbalancedBracketScopes": [
@@ -344,7 +344,7 @@
         }
       },
       {
-        "language": "typescriptreact_",
+        "language": "__typescriptreact__",
         "scopeName": "source.tsx",
         "path": "./res/typescript-basics/syntaxes/TypeScriptReact.tmLanguage.json",
         "unbalancedBracketScopes": [
@@ -388,7 +388,7 @@
     ],
     "semanticTokenScopes": [
       {
-        "language": "typescript_",
+        "language": "__typescript__",
         "scopes": {
           "property": [
             "variable.other.property.ts"
@@ -417,7 +417,7 @@
         }
       },
       {
-        "language": "typescriptreact_",
+        "language": "__typescriptreact__",
         "scopes": {
           "property": [
             "variable.other.property.tsx"
