@@ -5,11 +5,11 @@
     "outDir": "out",
     "lib": ["ES2020"],
     "sourceMap": true,
-    "rootDirs": [".", "src"],
+    "rootDirs": ["."],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "package.json"]
+  "include": ["src", "test", "package.json"]
 }
