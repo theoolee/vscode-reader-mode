@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.1.11: Feb 18, 2023
+
+- fix: comment highlight not working
+
 ## Version 0.1.9: Feb 17, 2023
 
 - fix: duplicate language service of built-in language
