@@ -19,12 +19,8 @@ type Config = ConfigDefinitionToConfig<
 > & {
   schemeName: string
   toggleReaderModeCommandId: string
-  hijackLanguageId: (languageId: string) => string | undefined
+  hijackedLanguageIds: string[]
 }
-
-const hijackedLanguageIds = packageJson.contributes.languages.map(
-  (language) => language.id
-)
 
 export const config = new Proxy<Config>({} as any, {
   get(target, key: keyof Config) {
@@ -33,11 +29,8 @@ export const config = new Proxy<Config>({} as any, {
         return packageJson.name
       case 'toggleReaderModeCommandId':
         return packageJson.contributes.commands[0].command
-      case 'hijackLanguageId':
-        return (languageId: string) =>
-          hijackedLanguageIds.find(
-            (hijackedLanguageId) => hijackedLanguageId === `__${languageId}__`
-          )
+      case 'hijackedLanguageIds':
+        return packageJson.contributes.languages.map((language) => language.id)
       default:
         return vscode.workspace.getConfiguration(packageJson.name).get(key)
     }

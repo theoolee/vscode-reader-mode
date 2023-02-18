@@ -1,4 +1,5 @@
 import vscode from 'vscode'
+import { config } from '../config'
 import { toReaderModeUri } from './uri'
 
 function wait(time: number) {
@@ -58,4 +59,16 @@ export function correctLocationResult<
   })
 
   return result
+}
+
+export function toRawLanguageId(languageId: string) {
+  return languageId.replace(/^__/, '').replace(/__$/, '')
+}
+
+export function toHijackedLanguageId(languageId: string) {
+  return (
+    config['hijackedLanguageIds'].find(
+      (hijackedLanguageId) => hijackedLanguageId === `__${languageId}__`
+    ) ?? languageId
+  )
 }

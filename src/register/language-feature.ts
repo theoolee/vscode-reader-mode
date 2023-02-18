@@ -4,6 +4,7 @@ import {
   correctSymbolResult,
   correctLocationResult,
   tryCommand,
+  toHijackedLanguageId,
 } from '../util/language'
 import { toOriginalUri, toReaderModeUri } from '../util/uri'
 import { BaseRegister } from './base'
@@ -262,11 +263,9 @@ export class GeneralLanguageFeatureRegister extends BaseRegister {
         }
 
         if (document.uri.scheme === config['schemeName']) {
-          const hijackedLanguageId = config['hijackLanguageId'](
-            document.languageId
-          )
+          const hijackedLanguageId = toHijackedLanguageId(document.languageId)
 
-          hijackedLanguageId &&
+          hijackedLanguageId !== document.languageId &&
             vscode.languages.setTextDocumentLanguage(
               document,
               hijackedLanguageId

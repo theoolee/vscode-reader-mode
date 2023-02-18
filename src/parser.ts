@@ -1,4 +1,5 @@
 import vscode from 'vscode'
+import { toRawLanguageId } from './util/language'
 
 interface CommentRecords {
   partial: vscode.Range[]
@@ -18,10 +19,11 @@ function escapeRegExp(text: string) {
 }
 
 function getCommentDelimiter(languageId: string): CommentDelimiter {
+  const rawLanguageId = toRawLanguageId(languageId)
   const commentDelimiter: CommentDelimiter = {}
 
   // For line.
-  switch (languageId) {
+  switch (rawLanguageId) {
     case 'al':
     case 'c':
     case 'cpp':
@@ -86,7 +88,7 @@ function getCommentDelimiter(languageId: string): CommentDelimiter {
   }
 
   // For block.
-  switch (languageId) {
+  switch (rawLanguageId) {
     case 'al':
     case 'c':
     case 'cpp':
