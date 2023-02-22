@@ -8,17 +8,16 @@ function wait(time: number) {
   })
 }
 
-// Ensure the document is opened before executing the command, otherwise some commands would return undefined.
-// If we still get undefined after max retry, we give up.
+// Ensure document and language server is ready before we get a result.
 export async function tryCommand(
   command: string,
   uri: vscode.Uri,
   ...args: any[]
 ) {
   let result: any
+  const document = await vscode.workspace.openTextDocument(uri)
 
-  while (!result) {
-    await vscode.workspace.openTextDocument(uri)
+  while (!result && !document.isClosed) {
     result = await vscode.commands.executeCommand(command, uri, ...args)
 
     if (!result) {

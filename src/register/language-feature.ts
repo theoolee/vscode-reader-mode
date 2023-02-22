@@ -199,7 +199,6 @@ class SelectionRangeProvider implements vscode.SelectionRangeProvider {
   }
 }
 
-
 class TypeHierarchyProvider implements vscode.TypeHierarchyProvider {
   async prepareTypeHierarchy(
     document: vscode.TextDocument,
@@ -232,6 +231,9 @@ class TypeHierarchyProvider implements vscode.TypeHierarchyProvider {
 class DocumentSemanticTokensProvider
   implements vscode.DocumentSemanticTokensProvider
 {
+  onDidChangeSemanticTokensEmitter = new vscode.EventEmitter<void>()
+  onDidChangeSemanticTokens = this.onDidChangeSemanticTokensEmitter.event
+
   async provideDocumentSemanticTokens(document: vscode.TextDocument) {
     const result: vscode.SemanticTokens = await tryCommand(
       'vscode.provideDocumentSemanticTokens',
@@ -319,9 +321,8 @@ export class GeneralLanguageFeatureRegister extends BaseRegister {
 }
 
 export class SpecificLanguageFeatureRegister extends BaseRegister {
-  private static documentSemanticTokensProvider =
-    new DocumentSemanticTokensProvider()
   private static registeredLanguageIdSet = new Set<string>()
+  static documentSemanticTokensProvider = new DocumentSemanticTokensProvider()
 
   async register(uri: vscode.Uri) {
     const document = await vscode.workspace.openTextDocument(toOriginalUri(uri))
@@ -338,7 +339,7 @@ export class SpecificLanguageFeatureRegister extends BaseRegister {
       document.languageId
     )
 
-    return this.doRegister(uri)
+    await this.doRegister(uri)
   }
 
   protected async doRegister(uri: vscode.Uri) {

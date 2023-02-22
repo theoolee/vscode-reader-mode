@@ -1,4 +1,5 @@
 import vscode from 'vscode'
+import { SpecificLanguageFeatureRegister } from './register/language-feature'
 import {
   closeActiveEditor,
   getActiveEditorSelection,
@@ -25,6 +26,10 @@ async function switchTextDocument(
     preview: false,
     selection,
   })
+
+  // Some language servers with special implementation would result vscode not to request semantic tokens.
+  // So we need to force vscode to request semantic tokens.
+  SpecificLanguageFeatureRegister.documentSemanticTokensProvider.onDidChangeSemanticTokensEmitter.fire()
 
   await setActiveTabIndex(tabIndex)
 }
