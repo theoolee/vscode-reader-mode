@@ -199,16 +199,6 @@ class SelectionRangeProvider implements vscode.SelectionRangeProvider {
   }
 }
 
-class CodeLensProvider implements vscode.CodeLensProvider {
-  async provideCodeLenses(document: vscode.TextDocument) {
-    const result: vscode.CodeLens[] = await tryCommand(
-      'vscode.executeCodeLensProvider',
-      toOriginalUri(document.uri)
-    )
-
-    return result
-  }
-}
 
 class TypeHierarchyProvider implements vscode.TypeHierarchyProvider {
   async prepareTypeHierarchy(
@@ -319,10 +309,6 @@ export class GeneralLanguageFeatureRegister extends BaseRegister {
       vscode.languages.registerSelectionRangeProvider(
         this.documentSelector,
         new SelectionRangeProvider()
-      ),
-      vscode.languages.registerCodeLensProvider(
-        this.documentSelector,
-        new CodeLensProvider()
       ),
       vscode.languages.registerTypeHierarchyProvider(
         this.documentSelector,
