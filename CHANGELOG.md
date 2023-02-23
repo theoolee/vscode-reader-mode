@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 0.2.0: Feb 23, 2023
+
+- fix: some language does not have semantic tokens
+- chore: remove code len provider
+
 ## Version 0.1.11: Feb 18, 2023
 
 - fix: comment highlight not working
