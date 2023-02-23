@@ -244,6 +244,51 @@ class DocumentSemanticTokensProvider
   }
 }
 
+class CallHierarchyProvider implements vscode.CallHierarchyProvider {
+  async prepareCallHierarchy(
+    document: vscode.TextDocument,
+    position: vscode.Position
+  ) {
+    const result: vscode.CallHierarchyItem | vscode.CallHierarchyItem[] =
+      await tryCommand(
+        'vscode.prepareCallHierarchy',
+        toOriginalUri(document.uri),
+        position
+      )
+
+    return result
+  }
+
+  async provideCallHierarchyIncomingCalls(item: vscode.CallHierarchyItem) {
+    const result: vscode.CallHierarchyIncomingCall[] =
+      await vscode.commands.executeCommand('vscode.provideIncomingCalls', item)
+
+    return result
+  }
+
+  async provideCallHierarchyOutgoingCalls(item: vscode.CallHierarchyItem) {
+    const result: vscode.CallHierarchyOutgoingCall[] =
+      await vscode.commands.executeCommand('vscode.provideOutgoingCalls', item)
+
+    return result
+  }
+}
+
+class InlineValuesProvider implements vscode.InlineValuesProvider {
+  async provideInlineValues(
+    document: vscode.TextDocument,
+    viewPort: vscode.Range
+  ) {
+    const result: vscode.InlineValue[] = await tryCommand(
+      'vscode.executeInlineValueProvider',
+      toOriginalUri(document.uri),
+      viewPort
+    )
+
+    return result
+  }
+}
+
 export class GeneralLanguageFeatureRegister extends BaseRegister {
   protected doRegister() {
     this.context.subscriptions.push(
@@ -315,6 +360,14 @@ export class GeneralLanguageFeatureRegister extends BaseRegister {
       vscode.languages.registerTypeHierarchyProvider(
         this.documentSelector,
         new TypeHierarchyProvider()
+      ),
+      vscode.languages.registerCallHierarchyProvider(
+        this.documentSelector,
+        new CallHierarchyProvider()
+      ),
+      vscode.languages.registerInlineValuesProvider(
+        this.documentSelector,
+        new InlineValuesProvider()
       )
     )
   }
