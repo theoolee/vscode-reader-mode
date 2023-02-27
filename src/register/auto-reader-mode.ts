@@ -1,8 +1,9 @@
 import vscode from 'vscode'
-import { showReaderModeDocument } from '../action'
+import { showOriginalDocument, showReaderModeDocument } from '../action'
 import { isUriMatchAutoReaderMode } from '../util/uri'
 import { config } from '../config'
 import { BaseRegister } from './base'
+import { tabHasUri } from '../util/misc'
 
 // Bypass is designed to bypass files that match the rules when manually toggling.
 export class AutoReaderModeRegister extends BaseRegister {
@@ -14,6 +15,10 @@ export class AutoReaderModeRegister extends BaseRegister {
 
   static removeBypassUri(uri: vscode.Uri) {
     AutoReaderModeRegister.bypassedUriSet.delete(uri.toString())
+  }
+
+  static clearBypassUri() {
+    AutoReaderModeRegister.bypassedUriSet.clear()
   }
 
   protected doRegister() {
@@ -34,6 +39,33 @@ export class AutoReaderModeRegister extends BaseRegister {
           isUriMatchAutoReaderMode(document.uri)
         ) {
           showReaderModeDocument(document)
+        }
+      }),
+      vscode.workspace.onDidChangeConfiguration((event) => {
+        if (event.affectsConfiguration('reader-mode.auto.glob')) {
+          vscode.window.tabGroups.all.forEach(async (tabGroup) => {
+            for (const tab of tabGroup.tabs) {
+              if (tabHasUri(tab)) {
+                const uri = tab.input.uri
+
+                if (
+                  uri.scheme === config['schemeName'] &&
+                  !isUriMatchAutoReaderMode(uri)
+                ) {
+                  await showOriginalDocument(
+                    await vscode.workspace.openTextDocument(uri)
+                  )
+                } else if (
+                  !AutoReaderModeRegister.bypassedUriSet.has(uri.toString()) &&
+                  isUriMatchAutoReaderMode(uri)
+                ) {
+                  await showReaderModeDocument(
+                    await vscode.workspace.openTextDocument(uri)
+                  )
+                }
+              }
+            }
+          })
         }
       })
     )

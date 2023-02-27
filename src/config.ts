@@ -18,7 +18,8 @@ type Config = ConfigDefinitionToConfig<
   'reader-mode.'
 > & {
   schemeName: string
-  toggleReaderModeCommandId: string
+  toggleFileReaderModeCommandId: string
+  toggleWorkspaceReaderModeCommandId: string
   hijackedLanguageIds: string[]
 }
 
@@ -27,8 +28,10 @@ export const config = new Proxy<Config>({} as any, {
     switch (key) {
       case 'schemeName':
         return packageJson.name
-      case 'toggleReaderModeCommandId':
+      case 'toggleFileReaderModeCommandId':
         return packageJson.contributes.commands[0].command
+      case 'toggleWorkspaceReaderModeCommandId':
+        return packageJson.contributes.commands[1].command
       case 'hijackedLanguageIds':
         return packageJson.contributes.languages.map((language) => language.id)
       default:

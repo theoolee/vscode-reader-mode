@@ -33,8 +33,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "reader-mode.toggle",
-        "title": "Reader Mode: Toggle Reader Mode"
+        "command": "reader-mode.toggleFile",
+        "title": "Reader Mode: Toggle Reader Mode for Current File"
+      },
+      {
+        "command": "reader-mode.toggleWorkspace",
+        "title": "Reader Mode: Toggle Reader Mode for Current Workspace"
       }
     ],
     "configuration": {

@@ -4,12 +4,13 @@ import { showOriginalDocument, showReaderModeDocument } from '../action'
 import { config } from '../config'
 import { BaseRegister } from './base'
 import { toOriginalUri } from '../util/uri'
+import path from 'path'
 
 export class ToggleCommandRegister extends BaseRegister {
   protected doRegister() {
     this.context.subscriptions.push(
       vscode.commands.registerCommand(
-        config['toggleReaderModeCommandId'],
+        config['toggleFileReaderModeCommandId'],
         async () => {
           const document = vscode.window.activeTextEditor?.document
 
@@ -29,6 +30,31 @@ export class ToggleCommandRegister extends BaseRegister {
           }
         }
       )
-    )
+    ),
+      this.context.subscriptions.push(
+        vscode.commands.registerCommand(
+          config['toggleWorkspaceReaderModeCommandId'],
+          async () => {
+            vscode.workspace.workspaceFolders?.forEach((folder) => {
+              const glob = path.resolve(folder.uri.path, '**')
+              const configuration = vscode.workspace.getConfiguration(
+                undefined,
+                folder.uri
+              )
+              const before: string[] =
+                configuration.get('reader-mode.auto.glob') ?? []
+              const isOn = before.findIndex((_glob) => _glob === glob) !== -1
+
+              AutoReaderModeRegister.clearBypassUri()
+              configuration.update(
+                'reader-mode.auto.glob',
+                isOn
+                  ? before.filter((_glob) => _glob !== glob)
+                  : [...before, glob]
+              )
+            })
+          }
+        )
+      )
   }
 }

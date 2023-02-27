@@ -1,5 +1,11 @@
 import vscode from 'vscode'
 
+type TabWithUri = vscode.Tab & { input: { uri: vscode.Uri } }
+
+export function tabHasUri(tab: vscode.Tab): tab is TabWithUri {
+  return !!(tab.input as any).uri
+}
+
 export async function closeActiveEditor() {
   await vscode.window.activeTextEditor?.document.save()
   // This method seems much faster than the commented out method below.
