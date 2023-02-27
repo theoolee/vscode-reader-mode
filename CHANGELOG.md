@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.3.0: Feb 27, 2023
+
+- feat: toggle workspace command
+
 ## Version 0.2.0: Feb 23, 2023
 
 - fix: some language does not have semantic tokens
