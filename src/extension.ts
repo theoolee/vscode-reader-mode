@@ -1,12 +1,12 @@
 import vscode from 'vscode'
-import { AutoReaderModeRegister } from './register/auto-reader-mode'
-import { ToggleCommandRegister } from './register/toggle-command'
-import { CommentHighlightRegister } from './register/comment-highlight'
-import { FileSystemRegister } from './register/file-system'
+import { AutoReaderModeRegister } from './feature-register/auto-reader-mode'
+import { ToggleCommandRegister } from './feature-register/toggle-command'
+import { CommentHighlightRegister } from './feature-register/comment-highlight'
+import { FileSystemRegister } from './feature-register/file-system'
 import {
   GeneralLanguageFeatureRegister,
   SpecificLanguageFeatureRegister,
-} from './register/language-feature'
+} from './feature-register/language-feature'
 
 export function activate(context: vscode.ExtensionContext) {
   const fileSystemRegister = new FileSystemRegister(context)

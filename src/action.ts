@@ -1,5 +1,5 @@
 import vscode from 'vscode'
-import { SpecificLanguageFeatureRegister } from './register/language-feature'
+import { SpecificLanguageFeatureRegister } from './feature-register/language-feature'
 import {
   closeTextDocument,
   getTextDocumentSelection,
