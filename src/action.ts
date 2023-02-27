@@ -1,10 +1,11 @@
 import vscode from 'vscode'
 import { SpecificLanguageFeatureRegister } from './register/language-feature'
 import {
-  closeActiveEditor,
-  getActiveEditorSelection,
-  getActiveTabIndex,
+  closeTextDocument,
+  getTextDocumentSelection,
+  getTextDocumentTabIndex,
   setActiveTabIndex,
+  isTextDocumentInTabGroup,
 } from './util/misc'
 import { toOriginalUri, toReaderModeUri } from './util/uri'
 
@@ -17,21 +18,21 @@ async function switchTextDocument(
     vscode.workspace.openTextDocument(targetUri),
   ])
 
-  await vscode.window.showTextDocument(sourceDocument)
-  const tabIndex = getActiveTabIndex()
-  const selection = getActiveEditorSelection()
-  await closeActiveEditor()
+  const isTargetDocumentVisible = isTextDocumentInTabGroup(targetDocument)
+  const tabIndex = getTextDocumentTabIndex(sourceDocument)
+  const selection = getTextDocumentSelection(sourceDocument)
+  closeTextDocument(sourceDocument)
 
   await vscode.window.showTextDocument(targetDocument, {
     preview: false,
-    selection,
+    selection: isTargetDocumentVisible ? undefined : selection,
   })
 
   // Some language servers with special implementation would result vscode not to request semantic tokens.
   // So we need to force vscode to request semantic tokens.
   SpecificLanguageFeatureRegister.documentSemanticTokensProvider.onDidChangeSemanticTokensEmitter.fire()
 
-  await setActiveTabIndex(tabIndex)
+  isTargetDocumentVisible || (await setActiveTabIndex(tabIndex))
 }
 
 export async function showReaderModeDocument(document: vscode.TextDocument) {

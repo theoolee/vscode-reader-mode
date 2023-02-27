@@ -6,22 +6,61 @@ export function tabHasUri(tab: vscode.Tab): tab is TabWithUri {
   return !!(tab.input as any).uri
 }
 
-export async function closeActiveEditor() {
-  await vscode.window.activeTextEditor?.document.save()
-  // This method seems much faster than the commented out method below.
-  vscode.window.activeTextEditor?.hide()
-  // await vscode.commands.executeCommand('workbench.action.closeActiveEditor')
-}
-
-export function getActiveEditorSelection() {
-  return vscode.window.activeTextEditor?.selection
-}
-
-export function getActiveTabIndex() {
-  const activeTabGroup = vscode.window.tabGroups.activeTabGroup
-  return activeTabGroup.tabs.findIndex(
-    (tab) => tab === activeTabGroup.activeTab
+export function getTextDocumentEditor(document: vscode.TextDocument) {
+  return vscode.window.visibleTextEditors.find(
+    (editor) => editor.document.uri.toString() === document.uri.toString()
   )
+}
+
+export function getTextDocumentTab(document: vscode.TextDocument) {
+  let tab: vscode.Tab | undefined
+
+  vscode.window.tabGroups.all.some((tabGroup) =>
+    tabGroup.tabs.some((_tab) => {
+      if (
+        tabHasUri(_tab) &&
+        _tab.input.uri.toString() === document.uri.toString()
+      ) {
+        tab = _tab
+        return true
+      }
+    })
+  )
+
+  return tab
+}
+
+export async function closeTextDocument(document: vscode.TextDocument) {
+  await document.save()
+  const tab = getTextDocumentTab(document)
+  tab && (await vscode.window.tabGroups.close(tab))
+}
+
+export function getTextDocumentSelection(document: vscode.TextDocument) {
+  const editor = getTextDocumentEditor(document)
+  return editor?.selection
+}
+
+export function getTextDocumentTabIndex(document: vscode.TextDocument) {
+  let index = -1
+
+  vscode.window.tabGroups.all.some((tabGroup) =>
+    tabGroup.tabs.some((tab, _index) => {
+      if (
+        tabHasUri(tab) &&
+        tab.input.uri.toString() === document.uri.toString()
+      ) {
+        index = _index
+        return true
+      }
+    })
+  )
+
+  return index
+}
+
+export function isTextDocumentInTabGroup(document: vscode.TextDocument) {
+  return !!getTextDocumentTab(document)
 }
 
 export async function setActiveTabIndex(index: number) {
