@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.3.1: Feb 28, 2023
+
+- fix: error when opening certain files
+
 ## Version 0.3.0: Feb 27, 2023
 
 - feat: toggle workspace command
