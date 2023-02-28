@@ -2,8 +2,8 @@ import vscode from 'vscode'
 
 type TabWithUri = vscode.Tab & { input: { uri: vscode.Uri } }
 
-export function tabHasUri(tab: vscode.Tab): tab is TabWithUri {
-  return !!(tab.input as any).uri
+export function isTabHasUri(tab: vscode.Tab): tab is TabWithUri {
+  return !!(tab.input as any)?.uri
 }
 
 export function getTextDocumentEditor(document: vscode.TextDocument) {
@@ -18,7 +18,7 @@ export function getTextDocumentTab(document: vscode.TextDocument) {
   vscode.window.tabGroups.all.some((tabGroup) =>
     tabGroup.tabs.some((_tab) => {
       if (
-        tabHasUri(_tab) &&
+        isTabHasUri(_tab) &&
         _tab.input.uri.toString() === document.uri.toString()
       ) {
         tab = _tab
@@ -47,7 +47,7 @@ export function getTextDocumentTabIndex(document: vscode.TextDocument) {
   vscode.window.tabGroups.all.some((tabGroup) =>
     tabGroup.tabs.some((tab, _index) => {
       if (
-        tabHasUri(tab) &&
+        isTabHasUri(tab) &&
         tab.input.uri.toString() === document.uri.toString()
       ) {
         index = _index

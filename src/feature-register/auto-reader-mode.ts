@@ -3,7 +3,7 @@ import { showOriginalDocument, showReaderModeDocument } from '../action'
 import { isUriMatchAutoReaderMode } from '../util/uri'
 import { config } from '../config'
 import { BaseRegister } from './base'
-import { tabHasUri } from '../util/misc'
+import { isTabHasUri } from '../util/misc'
 
 // Bypass is designed to bypass files that match the rules when manually toggling.
 export class AutoReaderModeRegister extends BaseRegister {
@@ -45,7 +45,7 @@ export class AutoReaderModeRegister extends BaseRegister {
         if (event.affectsConfiguration('reader-mode.auto.glob')) {
           vscode.window.tabGroups.all.forEach(async (tabGroup) => {
             for (const tab of tabGroup.tabs) {
-              if (tabHasUri(tab)) {
+              if (isTabHasUri(tab)) {
                 const uri = tab.input.uri
 
                 if (
