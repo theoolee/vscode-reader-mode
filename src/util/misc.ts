@@ -31,7 +31,11 @@ export function getTextDocumentTab(document: vscode.TextDocument) {
 }
 
 export async function closeTextDocument(document: vscode.TextDocument) {
-  await document.save()
+  try {
+    await document.save()
+  } catch (error) {
+    // ignore
+  }
   const tab = getTextDocumentTab(document)
   tab && (await vscode.window.tabGroups.close(tab))
 }

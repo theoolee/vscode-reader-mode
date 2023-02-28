@@ -21,7 +21,7 @@ export async function tryCommand(
     result = await vscode.commands.executeCommand(command, uri, ...args)
 
     if (!result) {
-      await wait(1000)
+      await wait(2000)
     }
   }
 

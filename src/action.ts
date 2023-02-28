@@ -18,21 +18,21 @@ async function switchTextDocument(
     vscode.workspace.openTextDocument(targetUri),
   ])
 
-  const isTargetDocumentVisible = isTextDocumentInTabGroup(targetDocument)
+  const isTargetDocumentInTabGroup = isTextDocumentInTabGroup(targetDocument)
   const tabIndex = getTextDocumentTabIndex(sourceDocument)
   const selection = getTextDocumentSelection(sourceDocument)
   closeTextDocument(sourceDocument)
 
   await vscode.window.showTextDocument(targetDocument, {
     preview: false,
-    selection: isTargetDocumentVisible ? undefined : selection,
+    selection,
   })
 
   // Some language servers with special implementation would result vscode not to request semantic tokens.
   // So we need to force vscode to request semantic tokens.
   SpecificLanguageFeatureRegister.documentSemanticTokensProvider.onDidChangeSemanticTokensEmitter.fire()
 
-  isTargetDocumentVisible || (await setActiveTabIndex(tabIndex))
+  isTargetDocumentInTabGroup || (await setActiveTabIndex(tabIndex))
 }
 
 export async function showReaderModeDocument(document: vscode.TextDocument) {

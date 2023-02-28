@@ -45,7 +45,6 @@ export class ToggleCommandRegister extends BaseRegister {
                 configuration.get('reader-mode.auto.glob') ?? []
               const isOn = before.findIndex((_glob) => _glob === glob) !== -1
 
-              AutoReaderModeRegister.clearBypassUri()
               configuration.update(
                 'reader-mode.auto.glob',
                 isOn
