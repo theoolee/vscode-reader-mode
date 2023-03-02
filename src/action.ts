@@ -6,6 +6,7 @@ import {
   getTextDocumentTabIndex,
   setActiveTabIndex,
   isTextDocumentInTabGroup,
+  isTextDocumentPreview,
 } from './util/misc'
 import { toOriginalUri, toReaderModeUri } from './util/uri'
 
@@ -19,12 +20,13 @@ async function switchTextDocument(
   ])
 
   const isTargetDocumentInTabGroup = isTextDocumentInTabGroup(targetDocument)
+  const isSourceDocumentPreview = isTextDocumentPreview(sourceDocument)
   const tabIndex = getTextDocumentTabIndex(sourceDocument)
   const selection = getTextDocumentSelection(sourceDocument)
   closeTextDocument(sourceDocument)
 
   await vscode.window.showTextDocument(targetDocument, {
-    preview: false,
+    preview: isSourceDocumentPreview,
     selection,
   })
 

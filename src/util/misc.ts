@@ -63,6 +63,11 @@ export function getTextDocumentTabIndex(document: vscode.TextDocument) {
   return index
 }
 
+export function isTextDocumentPreview(document: vscode.TextDocument) {
+  const tab = getTextDocumentTab(document)
+  return tab?.isPreview ?? true
+}
+
 export function isTextDocumentInTabGroup(document: vscode.TextDocument) {
   return !!getTextDocumentTab(document)
 }
