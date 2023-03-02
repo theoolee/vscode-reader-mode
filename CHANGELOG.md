@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.3.2: Mar 2, 2023
+
+- fix: document with the preview option is not previewed in reader mode
+
 ## Version 0.3.1: Feb 28, 2023
 
 - fix: error when opening certain files
