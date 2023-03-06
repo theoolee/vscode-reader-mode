@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.3.3: Mar 7, 2023
+
+- fix: semantic highlighting doesn't work for some languages
+
 ## Version 0.3.2: Mar 2, 2023
 
 - fix: document with the preview option is not previewed in reader mode
