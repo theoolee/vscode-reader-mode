@@ -1,6 +1,6 @@
 import vscode from 'vscode'
 import { config } from '../config'
-import { toReaderModeUri } from './uri'
+import { toOriginalUri, toReaderModeUri } from './uri'
 
 function wait(time: number) {
   return new Promise((resolve) => {
@@ -8,20 +8,29 @@ function wait(time: number) {
   })
 }
 
-// Ensure document and language server is ready before we get a result.
+/** Ensure document and language server is ready before we get a result.
+ * Try to get result every 2 seconds until we get a result or document is closed.
+ * 
+ * @param uri The reader mode uri.
+ */
 export async function tryCommand(
   command: string,
-  uri: vscode.Uri,
-  ...args: any[]
+  args: any[],
+  uri?: vscode.Uri
 ) {
+  if (!uri) {
+    return vscode.commands.executeCommand(command, ...args)
+  }
+
   let result: any
   const document = await vscode.workspace.openTextDocument(uri)
 
   while (!result && !document.isClosed) {
-    result = await vscode.commands.executeCommand(command, uri, ...args)
+    await vscode.workspace.openTextDocument(toOriginalUri(uri))
+    result = await vscode.commands.executeCommand(command, ...args)
 
     if (!result) {
-      await wait(2000)
+      await wait(1000)
     }
   }
 

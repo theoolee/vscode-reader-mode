@@ -16,8 +16,8 @@ class DocumentHighlightProvider implements vscode.DocumentHighlightProvider {
   ) {
     const result: vscode.DocumentHighlight[] = await tryCommand(
       'vscode.executeDocumentHighlights',
-      toOriginalUri(document.uri),
-      position
+      [toOriginalUri(document.uri), position],
+      document.uri
     )
 
     return result
@@ -28,7 +28,8 @@ class DocumentLinkProvider implements vscode.DocumentLinkProvider {
   async provideDocumentLinks(document: vscode.TextDocument) {
     const result: vscode.DocumentLink[] = await tryCommand(
       'vscode.executeLinkProvider',
-      toOriginalUri(document.uri)
+      [toOriginalUri(document.uri)],
+      document.uri
     )
 
     result.forEach((item) => {
@@ -48,8 +49,8 @@ class DefinitionProvider implements vscode.DefinitionProvider {
   ) {
     const result: vscode.Location[] | vscode.LocationLink[] = await tryCommand(
       'vscode.executeDefinitionProvider',
-      toOriginalUri(document.uri),
-      position
+      [toOriginalUri(document.uri), position],
+      document.uri
     )
 
     return correctLocationResult(result)
@@ -63,8 +64,8 @@ class TypeDefinitionProvider implements vscode.TypeDefinitionProvider {
   ) {
     const result: vscode.Location[] | vscode.LocationLink[] = await tryCommand(
       'vscode.executeTypeDefinitionProvider',
-      toOriginalUri(document.uri),
-      position
+      [toOriginalUri(document.uri), position],
+      document.uri
     )
 
     return correctLocationResult(result)
@@ -78,8 +79,8 @@ class DeclarationProvider implements vscode.DeclarationProvider {
   ) {
     const result: vscode.Location[] | vscode.LocationLink[] = await tryCommand(
       'vscode.executeDeclarationProvider',
-      toOriginalUri(document.uri),
-      position
+      [toOriginalUri(document.uri), position],
+      document.uri
     )
 
     return correctLocationResult(result)
@@ -93,8 +94,8 @@ class ImplementationProvider implements vscode.ImplementationProvider {
   ) {
     const result: vscode.Location[] | vscode.LocationLink[] = await tryCommand(
       'vscode.executeImplementationProvider',
-      toOriginalUri(document.uri),
-      position
+      [toOriginalUri(document.uri), position],
+      document.uri
     )
 
     return correctLocationResult(result)
@@ -108,8 +109,8 @@ class ReferenceProvider implements vscode.ReferenceProvider {
   ) {
     const result: vscode.Location[] = await tryCommand(
       'vscode.executeReferenceProvider',
-      toOriginalUri(document.uri),
-      position
+      [toOriginalUri(document.uri), position],
+      document.uri
     )
 
     return correctLocationResult(result)
@@ -120,8 +121,8 @@ class HoverProvider implements vscode.HoverProvider {
   async provideHover(document: vscode.TextDocument, position: vscode.Position) {
     const result: vscode.Hover[] = await tryCommand(
       'vscode.executeHoverProvider',
-      toOriginalUri(document.uri),
-      position
+      [toOriginalUri(document.uri), position],
+      document.uri
     )
 
     return result[0]
@@ -132,8 +133,8 @@ class InlayHintsProvider implements vscode.InlayHintsProvider {
   async provideInlayHints(document: vscode.TextDocument, range: vscode.Range) {
     const result: vscode.InlayHint[] = await tryCommand(
       'vscode.executeInlayHintProvider',
-      toOriginalUri(document.uri),
-      range
+      [toOriginalUri(document.uri), range],
+      document.uri
     )
 
     return result
@@ -145,7 +146,8 @@ class DocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     const result: vscode.SymbolInformation[] | vscode.DocumentSymbol[] =
       await tryCommand(
         'vscode.executeDocumentSymbolProvider',
-        toOriginalUri(document.uri)
+        [toOriginalUri(document.uri)],
+        document.uri
       )
 
     return correctSymbolResult(result)
@@ -156,7 +158,8 @@ class DocumentColorProvider implements vscode.DocumentColorProvider {
   async provideDocumentColors(document: vscode.TextDocument) {
     const result: vscode.ColorInformation[] = await tryCommand(
       'vscode.executeDocumentColorProvider',
-      toOriginalUri(document.uri)
+      [toOriginalUri(document.uri)],
+      document.uri
     )
 
     return result
@@ -169,16 +172,17 @@ class DocumentColorProvider implements vscode.DocumentColorProvider {
       readonly range: vscode.Range
     }
   ) {
-    await vscode.workspace.openTextDocument(toOriginalUri(context.document.uri))
-    const result: vscode.ColorPresentation[] =
-      await vscode.commands.executeCommand(
-        'vscode.provideColorPresentations',
+    const result: vscode.ColorPresentation[] = await tryCommand(
+      'vscode.provideColorPresentations',
+      [
         color,
         {
           uri: toOriginalUri(context.document.uri),
           range: context.range,
-        }
-      )
+        },
+      ],
+      context.document.uri
+    )
 
     return result
   }
@@ -191,8 +195,8 @@ class SelectionRangeProvider implements vscode.SelectionRangeProvider {
   ) {
     const result: vscode.SelectionRange[] = await tryCommand(
       'vscode.executeSelectionRangeProvider',
-      toOriginalUri(document.uri),
-      positions
+      [toOriginalUri(document.uri), positions],
+      document.uri
     )
 
     return result
@@ -206,23 +210,27 @@ class TypeHierarchyProvider implements vscode.TypeHierarchyProvider {
   ) {
     const result: vscode.TypeHierarchyItem[] = await tryCommand(
       'vscode.prepareTypeHierarchy',
-      toOriginalUri(document.uri),
-      position
+      [toOriginalUri(document.uri), position],
+      document.uri
     )
 
     return result
   }
 
   async provideTypeHierarchySupertypes(item: vscode.TypeHierarchyItem) {
-    const result: vscode.TypeHierarchyItem[] =
-      await vscode.commands.executeCommand('vscode.provideSupertypes', item)
+    const result: vscode.TypeHierarchyItem[] = await tryCommand(
+      'vscode.provideSupertypes',
+      [item]
+    )
 
     return result
   }
 
   async provideTypeHierarchySubtypes(item: vscode.TypeHierarchyItem) {
-    const result: vscode.TypeHierarchyItem[] =
-      await vscode.commands.executeCommand('vscode.provideSubtypes', item)
+    const result: vscode.TypeHierarchyItem[] = await tryCommand(
+      'vscode.provideSubtypes',
+      [item]
+    )
 
     return result
   }
@@ -237,7 +245,8 @@ class DocumentSemanticTokensProvider
   async provideDocumentSemanticTokens(document: vscode.TextDocument) {
     const result: vscode.SemanticTokens = await tryCommand(
       'vscode.provideDocumentSemanticTokens',
-      toOriginalUri(document.uri)
+      [toOriginalUri(document.uri)],
+      document.uri
     )
 
     return result
@@ -252,23 +261,27 @@ class CallHierarchyProvider implements vscode.CallHierarchyProvider {
     const result: vscode.CallHierarchyItem | vscode.CallHierarchyItem[] =
       await tryCommand(
         'vscode.prepareCallHierarchy',
-        toOriginalUri(document.uri),
-        position
+        [toOriginalUri(document.uri), position],
+        document.uri
       )
 
     return result
   }
 
   async provideCallHierarchyIncomingCalls(item: vscode.CallHierarchyItem) {
-    const result: vscode.CallHierarchyIncomingCall[] =
-      await vscode.commands.executeCommand('vscode.provideIncomingCalls', item)
+    const result: vscode.CallHierarchyIncomingCall[] = await tryCommand(
+      'vscode.provideIncomingCalls',
+      [item]
+    )
 
     return result
   }
 
   async provideCallHierarchyOutgoingCalls(item: vscode.CallHierarchyItem) {
-    const result: vscode.CallHierarchyOutgoingCall[] =
-      await vscode.commands.executeCommand('vscode.provideOutgoingCalls', item)
+    const result: vscode.CallHierarchyOutgoingCall[] = await tryCommand(
+      'vscode.provideOutgoingCalls',
+      [item]
+    )
 
     return result
   }
@@ -281,8 +294,8 @@ class InlineValuesProvider implements vscode.InlineValuesProvider {
   ) {
     const result: vscode.InlineValue[] = await tryCommand(
       'vscode.executeInlineValueProvider',
-      toOriginalUri(document.uri),
-      viewPort
+      [toOriginalUri(document.uri), viewPort],
+      document.uri
     )
 
     return result
@@ -399,7 +412,8 @@ export class SpecificLanguageFeatureRegister extends BaseRegister {
     const document = await vscode.workspace.openTextDocument(uri)
     const legend: vscode.SemanticTokensLegend = await tryCommand(
       'vscode.provideDocumentSemanticTokensLegend',
-      toOriginalUri(uri)
+      [toOriginalUri(uri)],
+      document.uri
     )
 
     this.context.subscriptions.push(
