@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.3.4: Mar 7, 2023
+
+- fix: wrong location when `go to location`
+
 ## Version 0.3.3: Mar 7, 2023
 
 - fix: semantic highlighting doesn't work for some languages
