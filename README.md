@@ -36,7 +36,7 @@ Enable reader mode automatically for files out of the current workspace:
 "reader-mode.auto.outOfWorkspace": true
 ```
 
-Enable reader mode when opening files by glob matching:
+Enable reader mode automatically for files matching glob:
 
 ```json
 "reader-mode.auto.glob": [

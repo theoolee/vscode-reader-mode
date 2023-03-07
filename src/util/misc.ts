@@ -6,13 +6,13 @@ export function isTabHasUri(tab: vscode.Tab): tab is TabWithUri {
   return !!(tab.input as any)?.uri
 }
 
-export function getTextDocumentEditor(document: vscode.TextDocument) {
+export function getDocumentEditor(document: vscode.TextDocument) {
   return vscode.window.visibleTextEditors.find(
     (editor) => editor.document.uri.toString() === document.uri.toString()
   )
 }
 
-export function getTextDocumentTab(document: vscode.TextDocument) {
+export function getDocumentTab(document: vscode.TextDocument) {
   let tab: vscode.Tab | undefined
 
   vscode.window.tabGroups.all.some((tabGroup) =>
@@ -30,22 +30,17 @@ export function getTextDocumentTab(document: vscode.TextDocument) {
   return tab
 }
 
-export async function closeTextDocument(document: vscode.TextDocument) {
+export async function closeDocumentTab(document: vscode.TextDocument) {
   try {
     await document.save()
   } catch (error) {
     // ignore
   }
-  const tab = getTextDocumentTab(document)
+  const tab = getDocumentTab(document)
   tab && (await vscode.window.tabGroups.close(tab))
 }
 
-export function getTextDocumentSelection(document: vscode.TextDocument) {
-  const editor = getTextDocumentEditor(document)
-  return editor?.selection
-}
-
-export function getTextDocumentTabIndex(document: vscode.TextDocument) {
+export function getDocumentTabIndex(document: vscode.TextDocument) {
   let index = -1
 
   vscode.window.tabGroups.all.some((tabGroup) =>
@@ -63,13 +58,8 @@ export function getTextDocumentTabIndex(document: vscode.TextDocument) {
   return index
 }
 
-export function isTextDocumentPreview(document: vscode.TextDocument) {
-  const tab = getTextDocumentTab(document)
-  return tab?.isPreview ?? true
-}
-
-export function isTextDocumentInTabGroup(document: vscode.TextDocument) {
-  return !!getTextDocumentTab(document)
+export function isDocumentInTabGroup(document: vscode.TextDocument) {
+  return !!getDocumentTab(document)
 }
 
 export async function setActiveTabIndex(index: number) {

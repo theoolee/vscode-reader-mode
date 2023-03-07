@@ -1,12 +1,12 @@
 import vscode from 'vscode'
 import { SpecificLanguageFeatureRegister } from './feature-register/language-feature'
 import {
-  closeTextDocument,
-  getTextDocumentSelection,
-  getTextDocumentTabIndex,
+  closeDocumentTab,
+  getDocumentTabIndex,
   setActiveTabIndex,
-  isTextDocumentInTabGroup,
-  isTextDocumentPreview,
+  isDocumentInTabGroup,
+  getDocumentEditor,
+  getDocumentTab,
 } from './util/misc'
 import { toOriginalUri, toReaderModeUri } from './util/uri'
 
@@ -19,22 +19,43 @@ async function switchTextDocument(
     vscode.workspace.openTextDocument(targetUri),
   ])
 
-  const isTargetDocumentInTabGroup = isTextDocumentInTabGroup(targetDocument)
-  const isSourceDocumentPreview = isTextDocumentPreview(sourceDocument)
-  const tabIndex = getTextDocumentTabIndex(sourceDocument)
-  const selection = getTextDocumentSelection(sourceDocument)
-  closeTextDocument(sourceDocument)
+  await vscode.window.showTextDocument(sourceDocument)
+  const sourceEditor = getDocumentEditor(sourceDocument)
+  const sourceTab = getDocumentTab(sourceDocument)
+  const sourceTabIndex = getDocumentTabIndex(sourceDocument)
+  const sourceSelection = sourceEditor?.selection
+  const cursorSurroundingLines = (vscode.workspace
+    .getConfiguration('editor')
+    .get('cursorSurroundingLines') ?? 0) as number
+  const sourceTopLine = sourceEditor?.visibleRanges[0].start.line
+  const isTargetInTabGroup = isDocumentInTabGroup(targetDocument)
+  const isSourcePreview = sourceTab?.isPreview
+  closeDocumentTab(sourceDocument)
 
   await vscode.window.showTextDocument(targetDocument, {
-    preview: isSourceDocumentPreview,
-    selection,
+    preview: isSourcePreview,
+    selection: sourceSelection,
   })
 
   // Some language servers with special implementation would result vscode not to request semantic tokens.
   // So we need to force vscode to request semantic tokens.
   SpecificLanguageFeatureRegister.documentSemanticTokensProvider.onDidChangeSemanticTokensEmitter.fire()
 
-  isTargetDocumentInTabGroup || (await setActiveTabIndex(tabIndex))
+  await Promise.all([
+    async () => {
+      if (sourceTopLine) {
+        await vscode.commands.executeCommand('revealLine', {
+          lineNumber: sourceTopLine - cursorSurroundingLines,
+          at: 'top',
+        })
+      }
+    },
+    async () => {
+      if (!isTargetInTabGroup) {
+        await setActiveTabIndex(sourceTabIndex)
+      }
+    },
+  ])
 }
 
 export async function showReaderModeDocument(document: vscode.TextDocument) {
