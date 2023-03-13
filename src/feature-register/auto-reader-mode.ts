@@ -30,7 +30,8 @@ export class AutoReaderModeRegister extends BaseRegister {
 
         const document = editor.document
 
-        if (editor.document.uri.scheme === config['schemeName']) {
+        // Only switch to reader mode for `file` scheme.
+        if (document.uri.scheme !== 'file') {
           return
         }
 
