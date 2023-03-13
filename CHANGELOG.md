@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.3.6: Mar 13, 2023
+
+- fix: unexpected behavior when switching to reader mode for non-file scheme.
+
 ## Version 0.3.5: Mar 13, 2023
 
 - fix: wrong cursor position when reuse opened tabs
