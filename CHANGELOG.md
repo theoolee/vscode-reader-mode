@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.3.5: Mar 13, 2023
+
+- fix: wrong cursor position when reuse opened tabs
+
 ## Version 0.3.4: Mar 7, 2023
 
 - fix: wrong location when `go to location`
