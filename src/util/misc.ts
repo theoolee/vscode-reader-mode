@@ -58,10 +58,6 @@ export function getDocumentTabIndex(document: vscode.TextDocument) {
   return index
 }
 
-export function isDocumentInTabGroup(document: vscode.TextDocument) {
-  return !!getDocumentTab(document)
-}
-
 export async function setActiveTabIndex(index: number) {
   if (index < 0) {
     return

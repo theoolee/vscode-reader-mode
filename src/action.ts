@@ -4,7 +4,6 @@ import {
   closeDocumentTab,
   getDocumentTabIndex,
   setActiveTabIndex,
-  isDocumentInTabGroup,
   getDocumentEditor,
   getDocumentTab,
 } from './util/misc'
@@ -22,40 +21,46 @@ async function switchTextDocument(
   await vscode.window.showTextDocument(sourceDocument)
   const sourceEditor = getDocumentEditor(sourceDocument)
   const sourceTab = getDocumentTab(sourceDocument)
+  const targetTab = getDocumentTab(targetDocument)
   const sourceTabIndex = getDocumentTabIndex(sourceDocument)
   const sourceSelection = sourceEditor?.selection
   const cursorSurroundingLines = (vscode.workspace
     .getConfiguration('editor')
     .get('cursorSurroundingLines') ?? 0) as number
   const sourceTopLine = sourceEditor?.visibleRanges[0].start.line
-  const isTargetInTabGroup = isDocumentInTabGroup(targetDocument)
+  const isTargetInTabGroup = !!targetTab
   const isSourcePreview = sourceTab?.isPreview
   closeDocumentTab(sourceDocument)
 
-  await vscode.window.showTextDocument(targetDocument, {
-    preview: isSourcePreview,
-    selection: sourceSelection,
-  })
+  await vscode.window.showTextDocument(
+    targetDocument,
+    isTargetInTabGroup
+      ? undefined
+      : {
+          preview: isSourcePreview,
+          selection: sourceSelection,
+        }
+  )
 
-  // Some language servers with special implementation would result vscode not to request semantic tokens.
-  // So we need to force vscode to request semantic tokens.
-  SpecificLanguageFeatureRegister.documentSemanticTokensProvider.onDidChangeSemanticTokensEmitter.fire()
+  if (!isTargetInTabGroup) {
+    // Some language servers with special implementation would result vscode not to request semantic tokens.
+    // So we need to force vscode to request semantic tokens.
+    SpecificLanguageFeatureRegister.documentSemanticTokensProvider.onDidChangeSemanticTokensEmitter.fire()
 
-  await Promise.all([
-    async () => {
-      if (sourceTopLine) {
-        await vscode.commands.executeCommand('revealLine', {
-          lineNumber: sourceTopLine - cursorSurroundingLines,
-          at: 'top',
-        })
-      }
-    },
-    async () => {
-      if (!isTargetInTabGroup) {
+    await Promise.all([
+      async () => {
+        if (sourceTopLine) {
+          await vscode.commands.executeCommand('revealLine', {
+            lineNumber: sourceTopLine - cursorSurroundingLines,
+            at: 'top',
+          })
+        }
+      },
+      async () => {
         await setActiveTabIndex(sourceTabIndex)
-      }
-    },
-  ])
+      },
+    ])
+  }
 }
 
 export async function showReaderModeDocument(document: vscode.TextDocument) {
