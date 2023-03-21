@@ -25,15 +25,14 @@
     "readonly"
   ],
   "activationEvents": [
-    "*",
-    "onFileSystem:reader-mode"
+    "*"
   ],
   "main": "out/src/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "reader-mode.toggleFile",
-        "title": "Reader Mode: Toggle Reader Mode for Current File"
+        "command": "reader-mode.temporarilyToggleFile",
+        "title": "Reader Mode: Temporarily Toggle Reader Mode for Current File"
       },
       {
         "command": "reader-mode.toggleWorkspace",
@@ -53,7 +52,14 @@
           "default": [
             "**/node_modules/**"
           ],
-          "description": "A list of glob to match against the path of the file to determine if it should be opened in reader mode automatically."
+          "description": "A list of glob to match against the path of the file to determine if it should be in reader mode automatically."
+        },
+        "reader-mode.auto.exclude": {
+          "type": "array",
+          "default": [
+            "**/.vscode/settings.json"
+          ],
+          "description": "A list of glob to match against the path of the file to determine if it should not be in reader mode."
         },
         "reader-mode.commentStyle.fontFamily": {
           "type": "string",
@@ -85,377 +91,12 @@
           "description": "The background color to use for comments in reader mode."
         }
       }
-    },
-    "languages": [
-      {
-        "id": "__css__",
-        "configuration": "./res/css/language-configuration.json",
-        "aliases": [
-          "CSS",
-          "css"
-        ],
-        "mimetypes": [
-          "text/css"
-        ]
-      },
-      {
-        "id": "__html__",
-        "configuration": "./res/html/language-configuration.json",
-        "aliases": [
-          "HTML",
-          "htm",
-          "html",
-          "xhtml"
-        ],
-        "mimetypes": [
-          "text/html",
-          "text/x-jshtm",
-          "text/template",
-          "text/ng-template",
-          "application/xhtml+xml"
-        ]
-      },
-      {
-        "id": "__json__",
-        "configuration": "./res/json/language-configuration.json",
-        "aliases": [
-          "JSON",
-          "json"
-        ],
-        "mimetypes": [
-          "application/json",
-          "application/manifest+json"
-        ]
-      },
-      {
-        "id": "__jsonc__",
-        "configuration": "./res/json/language-configuration.json",
-        "aliases": [
-          "JSON with Comments"
-        ]
-      },
-      {
-        "id": "__markdown__",
-        "configuration": "./res/markdown-basics/language-configuration.json",
-        "aliases": [
-          "Markdown",
-          "markdown"
-        ]
-      },
-      {
-        "id": "__markdown-math__",
-        "aliases": []
-      },
-      {
-        "id": "__php__",
-        "configuration": "./res/php/language-configuration.json",
-        "aliases": [
-          "PHP",
-          "php"
-        ],
-        "mimetypes": [
-          "application/x-php"
-        ]
-      },
-      {
-        "id": "__typescript__",
-        "configuration": "./res/typescript-basics/language-configuration.json",
-        "aliases": [
-          "TypeScript",
-          "ts",
-          "typescript"
-        ]
-      },
-      {
-        "id": "__typescriptreact__",
-        "configuration": "./res/typescript-basics/language-configuration.json",
-        "aliases": [
-          "TypeScript JSX",
-          "TypeScript React",
-          "tsx"
-        ]
-      },
-      {
-        "id": "__jsonc__"
-      },
-      {
-        "id": "__json__"
-      }
-    ],
-    "grammars": [
-      {
-        "language": "__css__",
-        "scopeName": "source.css",
-        "path": "./res/css/syntaxes/css.tmLanguage.json",
-        "tokenTypes": {
-          "meta.function.url string.quoted": "other"
-        }
-      },
-      {
-        "scopeName": "text.html.basic",
-        "path": "./res/html/syntaxes/html.tmLanguage.json",
-        "embeddedLanguages": {
-          "text.html": "html",
-          "source.css": "css",
-          "source.js": "javascript",
-          "source.python": "python",
-          "source.smarty": "smarty"
-        },
-        "tokenTypes": {
-          "meta.tag string.quoted": "other"
-        }
-      },
-      {
-        "language": "__html__",
-        "scopeName": "text.html.derivative",
-        "path": "./res/html/syntaxes/html-derivative.tmLanguage.json",
-        "embeddedLanguages": {
-          "text.html": "html",
-          "source.css": "css",
-          "source.js": "javascript",
-          "source.python": "python",
-          "source.smarty": "smarty"
-        },
-        "tokenTypes": {
-          "meta.tag string.quoted": "other"
-        }
-      },
-      {
-        "language": "__json__",
-        "scopeName": "source.json",
-        "path": "./res/json/syntaxes/JSON.tmLanguage.json"
-      },
-      {
-        "language": "__jsonc__",
-        "scopeName": "source.json.comments",
-        "path": "./res/json/syntaxes/JSONC.tmLanguage.json"
-      },
-      {
-        "language": "__markdown__",
-        "scopeName": "text.html.markdown",
-        "path": "./res/markdown-basics/syntaxes/markdown.tmLanguage.json",
-        "embeddedLanguages": {
-          "meta.embedded.block.html": "html",
-          "source.js": "javascript",
-          "source.css": "css",
-          "meta.embedded.block.frontmatter": "yaml",
-          "meta.embedded.block.css": "css",
-          "meta.embedded.block.ini": "ini",
-          "meta.embedded.block.java": "java",
-          "meta.embedded.block.lua": "lua",
-          "meta.embedded.block.makefile": "makefile",
-          "meta.embedded.block.perl": "perl",
-          "meta.embedded.block.r": "r",
-          "meta.embedded.block.ruby": "ruby",
-          "meta.embedded.block.php": "php",
-          "meta.embedded.block.sql": "sql",
-          "meta.embedded.block.vs_net": "vs_net",
-          "meta.embedded.block.xml": "xml",
-          "meta.embedded.block.xsl": "xsl",
-          "meta.embedded.block.yaml": "yaml",
-          "meta.embedded.block.dosbatch": "dosbatch",
-          "meta.embedded.block.clojure": "clojure",
-          "meta.embedded.block.coffee": "coffee",
-          "meta.embedded.block.c": "c",
-          "meta.embedded.block.cpp": "cpp",
-          "meta.embedded.block.diff": "diff",
-          "meta.embedded.block.dockerfile": "dockerfile",
-          "meta.embedded.block.go": "go",
-          "meta.embedded.block.groovy": "groovy",
-          "meta.embedded.block.pug": "jade",
-          "meta.embedded.block.javascript": "javascript",
-          "meta.embedded.block.json": "json",
-          "meta.embedded.block.jsonc": "jsonc",
-          "meta.embedded.block.latex": "latex",
-          "meta.embedded.block.less": "less",
-          "meta.embedded.block.objc": "objc",
-          "meta.embedded.block.scss": "scss",
-          "meta.embedded.block.perl6": "perl6",
-          "meta.embedded.block.powershell": "powershell",
-          "meta.embedded.block.python": "python",
-          "meta.embedded.block.rust": "rust",
-          "meta.embedded.block.scala": "scala",
-          "meta.embedded.block.shellscript": "shellscript",
-          "meta.embedded.block.typescript": "typescript",
-          "meta.embedded.block.typescriptreact": "typescriptreact",
-          "meta.embedded.block.csharp": "csharp",
-          "meta.embedded.block.fsharp": "fsharp"
-        }
-      },
-      {
-        "language": "__markdown-math__",
-        "scopeName": "text.html.markdown.math",
-        "path": "./res/markdown-math/syntaxes/md-math.tmLanguage.json"
-      },
-      {
-        "scopeName": "markdown.math.block",
-        "path": "./res/markdown-math/syntaxes/md-math-block.tmLanguage.json",
-        "injectTo": [
-          "text.html.markdown"
-        ],
-        "embeddedLanguages": {
-          "meta.embedded.math.markdown": "latex"
-        }
-      },
-      {
-        "scopeName": "markdown.math.inline",
-        "path": "./res/markdown-math/syntaxes/md-math-inline.tmLanguage.json",
-        "injectTo": [
-          "text.html.markdown"
-        ],
-        "embeddedLanguages": {
-          "meta.embedded.math.markdown": "latex"
-        }
-      },
-      {
-        "language": "__php__",
-        "scopeName": "source.php",
-        "path": "./res/php/syntaxes/php.tmLanguage.json"
-      },
-      {
-        "language": "__php__",
-        "scopeName": "text.html.php",
-        "path": "./res/php/syntaxes/html.tmLanguage.json",
-        "embeddedLanguages": {
-          "text.html": "html",
-          "source.php": "php",
-          "source.sql": "sql",
-          "text.xml": "xml",
-          "source.js": "javascript",
-          "source.json": "json",
-          "source.css": "css"
-        }
-      },
-      {
-        "language": "__typescript__",
-        "scopeName": "source.ts",
-        "path": "./res/typescript-basics/syntaxes/TypeScript.tmLanguage.json",
-        "unbalancedBracketScopes": [
-          "keyword.operator.relational",
-          "storage.type.function.arrow",
-          "keyword.operator.bitwise.shift",
-          "meta.brace.angle",
-          "punctuation.definition.tag"
-        ],
-        "tokenTypes": {
-          "meta.template.expression": "other",
-          "meta.template.expression string": "string",
-          "meta.template.expression comment": "comment",
-          "entity.name.type.instance.jsdoc": "other",
-          "entity.name.function.tagged-template": "other",
-          "meta.import string.quoted": "other",
-          "variable.other.jsdoc": "other"
-        }
-      },
-      {
-        "language": "__typescriptreact__",
-        "scopeName": "source.tsx",
-        "path": "./res/typescript-basics/syntaxes/TypeScriptReact.tmLanguage.json",
-        "unbalancedBracketScopes": [
-          "keyword.operator.relational",
-          "storage.type.function.arrow",
-          "keyword.operator.bitwise.shift",
-          "punctuation.definition.tag"
-        ],
-        "embeddedLanguages": {
-          "meta.tag.tsx": "jsx-tags",
-          "meta.tag.without-attributes.tsx": "jsx-tags",
-          "meta.tag.attributes.tsx": "typescriptreact",
-          "meta.embedded.expression.tsx": "typescriptreact"
-        },
-        "tokenTypes": {
-          "meta.template.expression": "other",
-          "meta.template.expression string": "string",
-          "meta.template.expression comment": "comment",
-          "entity.name.type.instance.jsdoc": "other",
-          "entity.name.function.tagged-template": "other",
-          "meta.import string.quoted": "other",
-          "variable.other.jsdoc": "other"
-        }
-      },
-      {
-        "scopeName": "documentation.injection.ts",
-        "path": "./res/typescript-basics/syntaxes/jsdoc.ts.injection.tmLanguage.json",
-        "injectTo": [
-          "source.ts",
-          "source.tsx"
-        ]
-      },
-      {
-        "scopeName": "documentation.injection.js.jsx",
-        "path": "./res/typescript-basics/syntaxes/jsdoc.js.injection.tmLanguage.json",
-        "injectTo": [
-          "source.js",
-          "source.js.jsx"
-        ]
-      }
-    ],
-    "semanticTokenScopes": [
-      {
-        "language": "__typescript__",
-        "scopes": {
-          "property": [
-            "variable.other.property.ts"
-          ],
-          "property.readonly": [
-            "variable.other.constant.property.ts"
-          ],
-          "variable": [
-            "variable.other.readwrite.ts"
-          ],
-          "variable.readonly": [
-            "variable.other.constant.object.ts"
-          ],
-          "function": [
-            "entity.name.function.ts"
-          ],
-          "namespace": [
-            "entity.name.type.module.ts"
-          ],
-          "variable.defaultLibrary": [
-            "support.variable.ts"
-          ],
-          "function.defaultLibrary": [
-            "support.function.ts"
-          ]
-        }
-      },
-      {
-        "language": "__typescriptreact__",
-        "scopes": {
-          "property": [
-            "variable.other.property.tsx"
-          ],
-          "property.readonly": [
-            "variable.other.constant.property.tsx"
-          ],
-          "variable": [
-            "variable.other.readwrite.tsx"
-          ],
-          "variable.readonly": [
-            "variable.other.constant.object.tsx"
-          ],
-          "function": [
-            "entity.name.function.tsx"
-          ],
-          "namespace": [
-            "entity.name.type.module.tsx"
-          ],
-          "variable.defaultLibrary": [
-            "support.variable.tsx"
-          ],
-          "function.defaultLibrary": [
-            "support.function.tsx"
-          ]
-        }
-      }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "gen": "node ./res/gen.js",
-    "build": "npm run gen && tsc -p ./",
-    "watch": "npm run build -- --watch",
+    "build": "tsc -p ./",
+    "watch": "tsc -p ./ --watch",
     "test": "node ./out/test/run-test.js",
     "lint": "eslint src --ext ts"
   },
@@ -473,6 +114,7 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
-    "minimatch": "^6.2.0"
+    "minimatch": "^6.2.0",
+    "rxjs": "^7.8.0"
   }
 }

@@ -14,11 +14,11 @@ Provides an elegant and secure way to read library code.
 
 ## Usage
 
-Toggle reader mode for current file:
+Temporarily Toggle reader mode for current file:
 
+- Find the book icon in the right bottom corner of the status bar and click it.
+  ![alt](img/status-bar.png)
 - Open the command palette and run `Reader Mode: Toggle Reader Mode for Current File`.
-
-  > Manually switching the files that match the auto reader mode rules from reader mode to normal will disable the auto reader mode for these files until you reload window, or you can manually toggle them back to reader mode.
 
 Toggle reader mode for current workspace:
 
@@ -44,10 +44,18 @@ Enable reader mode automatically for files matching glob:
 ]
 ```
 
+Exclude files from enabling reader mode automatically:
+
+```json
+"reader-mode.auto.exclude": [
+  "**/.vscode/settings.json"
+]
+```
+
 Change the comment style in reader mode, you should use the string form of valid CSS values here:
 
 ```jsonc
-// "reader-mode.commentStyle.fontFamily":  "Consolas, 'Courier New', monospace",
+"reader-mode.commentStyle.fontFamily":  "Consolas, 'Courier New', monospace",
 "reader-mode.commentStyle.fontStyle": "italic",
 "reader-mode.commentStyle.fontSize": "0.9em",
 "reader-mode.commentStyle.fontWeight": "300",
@@ -57,12 +65,7 @@ Change the comment style in reader mode, you should use the string form of valid
 
 ## How It Works
 
-This extension registers a `reader-mode` file scheme, and redirects file content and most of the language features to this scheme. Hijacking files open from explorer or toggling read-only mode is just closing the original editor and opening a `reader-mode` one.
-
-## Known Issues
-
-- Flickering when toggling files, which is because the extension API doesn't provide a way to hijack files open.
-- Evaluatable Expression in debug session doesn't work, which is because the extension API doesn't provide a way to request expression values.
+This version is a new implementation of the extension, which is not hijacking files but just listening to document changes, and simply undoing them.
 
 ## Contributing
 
