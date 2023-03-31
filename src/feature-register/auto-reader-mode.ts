@@ -24,7 +24,11 @@ export class AutoReaderModeRegister extends BaseRegister {
   protected doRegister() {
     this.context.subscriptions.push(
       vscode.window.onDidChangeActiveTextEditor(async (editor) => {
-        if (!editor) {
+        if (
+          !editor ||
+          vscode.window.tabGroups.activeTabGroup.activeTab?.isPinned ||
+          vscode.debug.activeDebugSession
+        ) {
           return
         }
 
