@@ -63,6 +63,7 @@ This extension registers a `reader-mode` file scheme, and redirects file content
 
 - Flickering when toggling files, which is because the extension API doesn't provide a way to hijack files open.
 - Evaluatable Expression in debug session doesn't work, which is because the extension API doesn't provide a way to request expression values.
+  - If there is any active debug session, the extension will disable auto-reader-mode.
 
 ## Contributing
 

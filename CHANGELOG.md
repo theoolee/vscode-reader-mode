@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.3.7: Mar 31, 2023
+
+- chore: disable auto-read-mode in window that has an active debug session or the tab is pinned.
+
 ## Version 0.3.6: Mar 13, 2023
 
 - fix: unexpected behavior when switching to reader mode for non-file scheme.
